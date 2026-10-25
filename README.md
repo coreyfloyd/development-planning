@@ -103,6 +103,20 @@ worked example directly in a browser:
 The skills determine section order and content; the kit supplies the visual
 building blocks. A configured review-hosting handler can deliver the same page.
 
+## Verifiable releases
+
+Download the five assets from a tagged GitHub release. Before extracting, run:
+
+```sh
+bash verify-release.sh development-planning-0.1.0.tar.gz development-planning-release.asc 09674AFF392661238F4ACBD9F32B3A412CD5EFC5
+```
+
+Requires Bash, GnuPG, and `shasum`. The checksum carries the maintainer's
+signature, and verification uses a temporary keyring. The expected fingerprint
+must come from a trusted source; a key downloaded alongside an archive alone
+cannot establish trust. Any failed check leaves the archive NOT VERIFIED.
+See [RELEASING.md](RELEASING.md) for the manual signing and publication contract.
+
 ## Tests
 
 Run the complete package suite (including settings resolution in both tools,
@@ -113,7 +127,10 @@ examples, and review delivery):
 uv run --with pytest python -m pytest -q -s tests
 ```
 
-Only pytest is needed for tests; shipped scripts use Python's standard library.
+The release tests additionally require GnuPG (`gpg` and `gpgconf`), Git, Bash,
+and `shasum`; signatures in tests use disposable keys, never the release key.
+Set `PLANNING_RELEASE_CHECK=1` for release validation so missing GnuPG fails
+rather than skipping release tests. Shipped Python scripts use the standard library.
 All tests use temporary tool homes and repository settings.
 
 ## Public history gate
