@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>On-demand Slack channel agents</title><style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#15181d; --dim:#5c6470; --line:#d5d9e0;
+  --node:#ffffff; --nodeline:#c3c9d4;
+  --hot:#d92b5c; --hotbg:#fdeaf0; --hotline:#d92b5c;
+  --off:#8b929c; --offbg:#eceef1;
+  --warn:#b3541e; --warnbg:#fdf0e6;
+  --ok:#0f8a6a; --okbg:#e6f5f0;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0e1116; --panel:#161b22; --ink:#e7ecf3; --dim:#9aa4b2; --line:#2a313c;
+    --node:#1c222b; --nodeline:#39424f;
+    --hot:#ff5d86; --hotbg:#3a1424; --hotline:#ff5d86;
+    --off:#6f7885; --offbg:#20262f;
+    --warn:#e8a06a; --warnbg:#33241a;
+    --ok:#3ecfa5; --okbg:#12302a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1116; --panel:#161b22; --ink:#e7ecf3; --dim:#9aa4b2; --line:#2a313c;
+  --node:#1c222b; --nodeline:#39424f;
+  --hot:#ff5d86; --hotbg:#3a1424; --hotline:#ff5d86;
+  --off:#6f7885; --offbg:#20262f;
+  --warn:#e8a06a; --warnbg:#33241a;
+  --ok:#3ecfa5; --okbg:#12302a;
+}
+:root[data-theme="light"]{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#15181d; --dim:#5c6470; --line:#d5d9e0;
+  --node:#ffffff; --nodeline:#c3c9d4;
+  --hot:#d92b5c; --hotbg:#fdeaf0; --hotline:#d92b5c;
+  --off:#8b929c; --offbg:#eceef1;
+  --warn:#b3541e; --warnbg:#fdf0e6;
+  --ok:#0f8a6a; --okbg:#e6f5f0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.02em}
+h2{font-size:19px;margin:0 0 2px;letter-spacing:-.01em}
+h3{font-size:14px;margin:18px 0 8px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em}
+.sub{color:var(--dim);font-size:13px;margin:0}
+section{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:20px;margin:22px 0}
+section.hot{border-color:var(--hotline);box-shadow:0 0 0 3px color-mix(in srgb,var(--hotline) 12%,transparent)}
+.hotflag{display:inline-block;background:var(--hotbg);color:var(--hot);border:1px solid var(--hot);
+  border-radius:99px;padding:1px 9px;font-size:11px;font-weight:700;letter-spacing:.04em;
+  vertical-align:middle;margin-left:8px}
+.src{margin-top:14px;padding-top:10px;border-top:1px dashed var(--line);
+  font-family:var(--mono);font-size:11.5px;color:var(--dim);word-break:break-word}
+.src b{color:var(--dim);font-weight:600}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+svg{display:block;max-width:100%;height:auto}
+svg text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:var(--dim);margin-top:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;
+  vertical-align:-1px;border:2px solid currentColor}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(228px,1fr))}
+.card{background:var(--node);border:1px solid var(--nodeline);border-radius:9px;padding:10px 11px}
+.card.dead{opacity:.62;border-style:dashed}
+.card .t{font-family:var(--mono);font-size:12.5px;font-weight:600;word-break:break-all}
+.card .m{font-size:11.5px;color:var(--dim);margin-top:3px;overflow-wrap:anywhere}
+.pill{display:inline-block;border-radius:99px;padding:1px 7px;font-size:10.5px;font-weight:700;
+  letter-spacing:.03em;margin-right:4px;margin-top:5px;border:1px solid transparent}
+.p-run{background:var(--okbg);color:var(--ok);border-color:var(--ok)}
+.p-idle{background:var(--offbg);color:var(--off);border-color:var(--nodeline)}
+.p-off{background:var(--offbg);color:var(--off);border-color:var(--off)}
+.p-warn{background:var(--warnbg);color:var(--warn);border-color:var(--warn)}
+.p-hot{background:var(--hotbg);color:var(--hot);border-color:var(--hot)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);
+  border-bottom:1px solid var(--line);padding:6px 8px;white-space:nowrap}
+td{border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top}
+td.mono,th.mono{font-family:var(--mono);font-size:12px}
+ul.find{margin:6px 0 0;padding-left:0;list-style:none}
+ul.find li{border-left:3px solid var(--warn);background:var(--warnbg);border-radius:0 7px 7px 0;
+  padding:9px 12px;margin-bottom:8px;font-size:13.5px}
+ul.find li.sev-hot{border-left-color:var(--hot);background:var(--hotbg)}
+ul.find li b{font-family:var(--mono);font-size:12.5px}
+.two{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+code{font-family:var(--mono);font-size:12px;background:var(--offbg);padding:1px 4px;border-radius:4px;
+  overflow-wrap:anywhere}
+section{overflow-x:hidden}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
+.toc a{font-size:12px;text-decoration:none;color:var(--ink);background:var(--node);
+  border:1px solid var(--nodeline);border-radius:99px;padding:3px 10px}
+.toc a.hot{border-color:var(--hot);color:var(--hot)}
+
+/* Review page layer. The neutral diagram base above is copied verbatim. */
+:root { color-scheme:light dark }
+:root[data-theme="light"] { color-scheme:light }
+:root[data-theme="dark"] { color-scheme:dark }
+main { max-width:1080px; margin:auto; padding:32px 24px 72px }
+h1 { font-size:32px; line-height:1.2; margin-bottom:12px }
+h2 { font-size:21px; margin-bottom:14px }
+h3 { color:var(--ink); text-transform:none; letter-spacing:0; font-size:17px }
+a { color:var(--ink); text-underline-offset:3px }
+p { max-width:78ch }
+.approval-bar { border:2px solid var(--ink); border-radius:12px; padding:20px 24px;
+  margin:24px 0; background:var(--panel) }
+.approval-bar p { margin:6px 0 }
+.reply-codes { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px }
+.reply-codes code { padding:6px 10px; border:1px solid var(--nodeline) }
+.review-section { padding:24px; margin:24px 0 }
+.section-label { font:12px var(--mono); color:var(--dim); margin:0 0 8px }
+.diagram-frame { overflow-x:auto; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); padding:16px; margin:16px 0 }
+.diagram-frame svg { width:100%; min-width:640px }
+.diagram-frame text { fill:var(--ink) }
+.diagram-frame .node { fill:var(--node); stroke:var(--nodeline); stroke-width:1.5 }
+.diagram-frame .group { fill:none; stroke:var(--line); stroke-width:1.5 }
+.diagram-frame .edge { fill:none; stroke:var(--dim); stroke-width:1.5 }
+.diagram-frame .node-label { font:14px var(--mono) }
+.diagram-frame .edge-label { font:12px var(--mono); fill:var(--dim) }
+.diagram-frame .blocked { stroke-dasharray:5 4 }
+.caption { font-size:14px; color:var(--dim); margin:12px 0 0 }
+.pair { display:grid; grid-template-columns:1fr 1fr; gap:16px }
+.pane { border:1px solid var(--line); border-radius:8px; padding:16px }
+.pane h3 { margin-top:0 }
+.decisions { display:grid; gap:18px }
+.decision-card { min-width:0; border:1px solid var(--nodeline); border-radius:10px; padding:22px }
+.decision-card h3 { margin:0 0 12px }
+.fact { background:var(--offbg); border-radius:6px; padding:12px 16px; margin:12px 0 }
+.options { display:grid; gap:10px; margin:16px 0 }
+.option { position:relative; display:grid; grid-template-columns:24px minmax(0,1fr); gap:12px;
+  align-items:start; padding:16px; border:1px solid var(--nodeline); border-radius:8px;
+  background:var(--panel); cursor:pointer }
+.option input { width:20px; height:20px; margin:2px 0; accent-color:var(--ink) }
+.option p { margin:6px 0 0; font-size:14px }
+.option-title { font-weight:600 }
+.recommended { font:12px var(--mono); color:var(--dim) }
+/* A recommendation is a label, never a selected state. Native checked state is
+   the source of truth for pointer, keyboard and restored form selections. */
+.option:has(input:checked) { border-color:var(--ok); box-shadow:0 0 0 2px var(--ok);
+  background:var(--okbg) }
+.option:has(input:checked) .option-title { font-weight:800 }
+.option:has(input:checked) .recommended { color:inherit }
+.option:has(input:checked) code { background:var(--panel); color:var(--ink) }
+.option:has(input:checked) .option-title::before { content:"✓ Selected · "; font-weight:800 }
+.option:focus-within { outline:3px solid var(--dim); outline-offset:3px }
+textarea { display:block; width:100%; min-height:80px; margin-top:8px; border:1px solid var(--nodeline);
+  border-radius:6px; padding:12px; font:inherit; color:var(--ink); background:var(--panel) }
+button { min-height:44px; padding:10px 16px; border:1px solid var(--ink); border-radius:6px;
+  background:var(--ink); color:var(--panel); font:600 14px system-ui; cursor:pointer }
+button.alt, button.plain { background:var(--panel); color:var(--ink) }
+button:disabled { opacity:.6; cursor:default }
+.btns { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px }
+.review-footer { border-top:1px solid var(--line); margin-top:28px; padding-top:20px;
+  color:var(--dim); font-size:13px; overflow-wrap:anywhere }
+.review-footer p { margin:6px 0 }
+@media (max-width:640px) {
+  main { padding:20px 12px 48px } h1 { font-size:26px }
+  .review-section,.approval-bar,.decision-card { padding:16px }
+  .pair { grid-template-columns:1fr }
+}
+@media print {
+  :root,:root[data-theme] { --bg:#fff; --panel:#fff; --ink:#111; --dim:#444; --line:#aaa;
+    --node:#fff; --nodeline:#777; --off:#555; --offbg:#eee;
+    --ok:#075b43; --okbg:#e8f5ef; --warn:#76370f; --warnbg:#fff3e8;
+    --hot:#95203d; --hotbg:#fceef2; --hotline:#95203d;
+    color-scheme:light }
+  body { background:#fff; color:#111; font-size:11pt }
+  main { max-width:none; padding:0 }
+  .review-section { overflow:visible; padding:16px; margin:16px 0 }
+  h2,h3 { break-after:avoid }
+  .approval-bar,.option,.diagram-frame,.review-footer { break-inside:avoid }
+  .diagram-frame { overflow:visible; padding:8px }
+  .diagram-frame svg { min-width:0 }
+  .option:has(input:checked) { background:#fff; color:#111;
+    border:3px solid var(--ok); padding:14px; box-shadow:0 0 0 2px var(--ok) }
+  .option:has(input:checked) .option-title { font-weight:800 }
+  .option:has(input:checked) .option-title::before { content:"✓ Selected · "; font-weight:800 }
+  .option input { appearance:auto; accent-color:auto }
+  textarea { min-height:40px }
+}
+</style></head><body><main>
+<header><p class="section-label">Planning package · review page kit · worked example</p><h1>On-demand Slack channel agents</h1><p class="sub">Sanitized historical adaptation. All proposal behavior below describes the source design; it is not a claim about an installed system.</p></header>
+<p><strong>Review receipt:</strong> Historical design review dated 2026-08-22, recorded as hardened after seven rounds and still awaiting a user decision. This adaptation has not received an independent review.</p>
+<aside class="approval-bar" aria-label="Practice approval instructions"><strong>Practice reply codes</strong><p>In the source workflow, approval records the specification decision and authorizes ticket planning, not implementation. This offline example sends nothing. Pick answers, then copy the codes and any comments into a conversation.</p><div class="reply-codes"><code>APPROVE</code><code>APPROVE Q1A Q2A Q3A</code><code>CHANGES: &lt;notes&gt;</code></div><p>Choosing an option is not submission or approval. An unanswered question remains open.</p></aside>
+<section class="review-section"><h2>Why this exists</h2><div class="pair"><div class="pane"><h3>Before</h3><ul><li>One always-on operator polls a global inbox.</li><li>Channels lack separate visible agent identities.</li><li>Operations and projects funnel through one session.</li></ul></div><div class="pane"><h3>After</h3><ul><li>A user message launches a bounded interactive channel agent.</li><li>Each role/channel pair owns a visible controller and expiring lease.</li><li>Headless jobs stay independent of channel conversations.</li></ul></div></div></section><section class="review-section"><h2>System map</h2><figure class="diagram-frame"><svg role="img" aria-label="Messages are durable before dispatch. Only the session manager changes controller lifecycle state." viewBox="0 0 1000 132"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10" fill="var(--dim)"/></marker></defs><rect class="node" x="12.0" y="36" width="176.0" height="60" rx="8"/><text x="100.0" y="71" text-anchor="middle">Slack message</text><rect class="node" x="212.0" y="36" width="176.0" height="60" rx="8"/><text x="300.0" y="71" text-anchor="middle">Listener</text><path class="edge" d="M190.0 66 H214.0" marker-end="url(#arrow)"/><rect class="node" x="412.0" y="36" width="176.0" height="60" rx="8"/><text x="500.0" y="71" text-anchor="middle">Durable records</text><path class="edge" d="M390.0 66 H414.0" marker-end="url(#arrow)"/><rect class="node" x="612.0" y="36" width="176.0" height="60" rx="8"/><text x="700.0" y="71" text-anchor="middle">Session manager</text><path class="edge" d="M590.0 66 H614.0" marker-end="url(#arrow)"/><rect class="node" x="812.0" y="36" width="176.0" height="60" rx="8"/><text x="900.0" y="71" text-anchor="middle">Visible controller</text><path class="edge" d="M790.0 66 H814.0" marker-end="url(#arrow)"/></svg><figcaption class="caption">Messages are durable before dispatch. Only the session manager changes controller lifecycle state.</figcaption></figure><table><thead><tr><th>Part</th><th>Responsibility</th></tr></thead><tbody><tr><td>Listener</td><td>Socket Mode intake, user-identity filter, two-layer deduplication, history backfill, classification and shutdown tokens.</td></tr><tr><td>Durable records</td><td>Inbox, unresolved identity records, inbound intents, delegated work, posted replies, handoff and lease. State lives outside the source checkout.</td></tr><tr><td>Session manager</td><td>Launch, rebind, drain and recover controllers; post acknowledgments. Reads durable job state and terminal-session snapshots. Agent events are hints.</td></tr><tr><td>Controller</td><td>One visible terminal workspace per role/channel identity; coordinates delegated jobs and subagents.</td></tr><tr><td>Alerts</td><td>Notification-only alert channels do not launch conversational agents. Focused triage can emit an incident-wake intent through the existing operational path.</td></tr></tbody></table></section><section class="review-section"><h2>Controller lifecycle</h2><figure class="diagram-frame"><svg role="img" aria-label="An intent cold-starts a controller; the manager owns readiness, draining and return to dormancy." viewBox="0 0 1000 132"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10" fill="var(--dim)"/></marker></defs><rect class="node" x="12.0" y="36" width="176.0" height="60" rx="8"/><text x="100.0" y="71" text-anchor="middle">dormant</text><rect class="node" x="212.0" y="36" width="176.0" height="60" rx="8"/><text x="300.0" y="71" text-anchor="middle">cold-start</text><path class="edge" d="M190.0 66 H214.0" marker-end="url(#arrow)"/><rect class="node" x="412.0" y="36" width="176.0" height="60" rx="8"/><text x="500.0" y="71" text-anchor="middle">active</text><path class="edge" d="M390.0 66 H414.0" marker-end="url(#arrow)"/><rect class="node" x="612.0" y="36" width="176.0" height="60" rx="8"/><text x="700.0" y="71" text-anchor="middle">draining</text><path class="edge" d="M590.0 66 H614.0" marker-end="url(#arrow)"/><rect class="node" x="812.0" y="36" width="176.0" height="60" rx="8"/><text x="900.0" y="71" text-anchor="middle">dormant</text><path class="edge" d="M790.0 66 H814.0" marker-end="url(#arrow)"/></svg><figcaption class="caption">An intent cold-starts a controller; the manager owns readiness, draining and return to dormancy.</figcaption></figure><table><thead><tr><th>Trigger</th><th>Transition or rule</th></tr></thead><tbody><tr><td>Non-shutdown intent while dormant</td><td>Acquire lock and replay into cold-start. A handoff may already exist.</td></tr><tr><td>Ready / launch error</td><td>Ready becomes active; launch failure becomes failed with a notice and retry.</td></tr><tr><td>User event or work completion</td><td>Renew the 60-minute lease, bounded by the human-idle cap. A self-dispatched job chain cannot keep a session alive forever.</td></tr><tr><td>Implementation in the new reply mode</td><td>Transient worktree-rebind preserves controller identity and lease while switching workspace.</td></tr><tr><td>Shutdown, or expired lease with no active work</td><td>Drain active work, absorb the handoff, expire and become dormant. Shutdown while dormant is a no-op.</td></tr></tbody></table><p>Completion and block/reap gates use durable job records plus terminal-session state; agent completion events are hints rather than lifecycle authority.</p></section><section class="review-section"><h2>Per-channel migration</h2><figure class="diagram-frame"><svg role="img" aria-label="reply_owner changes in order. The durable inbox holds messages during the flipping gap." viewBox="0 0 800 132"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10" fill="var(--dim)"/></marker></defs><rect class="node" x="12.0" y="36" width="242.66666666666669" height="60" rx="8"/><text x="133.33333333333334" y="71" text-anchor="middle">legacy: replies</text><rect class="node" x="278.6666666666667" y="36" width="242.66666666666669" height="60" rx="8"/><text x="400.0" y="71" text-anchor="middle">flipping: neither</text><path class="edge" d="M256.6666666666667 66 H280.6666666666667" marker-end="url(#arrow)"/><rect class="node" x="545.3333333333334" y="36" width="242.66666666666669" height="60" rx="8"/><text x="666.6666666666667" y="71" text-anchor="middle">new: replies</text><path class="edge" d="M523.3333333333334 66 H547.3333333333334" marker-end="url(#arrow)"/></svg><figcaption class="caption">reply_owner changes in order. The durable inbox holds messages during the flipping gap.</figcaption></figure><p>Keep <code>reply_owner</code> three-valued: <code>legacy → flipping → new</code>. The legacy reader replies only in legacy; the new controller replies only in new. Stop the old side and confirm it has dropped ownership before enabling the new side. Rollback goes through flipping as well.</p><p>Before cutover, the new path stays read-only and proves ingestion, deduplication, recovery and draft behavior in a scratch thread against the source runbook's six evidence requirements. Durable intake bridges the no-reply interval; it prevents a lost-message window without allowing both readers to reply. Worktree rebinding and remediation become available only in new mode. Retire the old reader after the rollback window.</p></section><section class="review-section"><h2>Implementation slices and dependencies</h2><figure class="diagram-frame"><svg role="img" aria-label="S1 precedes S2, which precedes S3. S4–S6 each build on S3; their horizontal placement below is not a serial blocker chain." viewBox="0 0 800 132"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10" fill="var(--dim)"/></marker></defs><rect class="node" x="12.0" y="36" width="242.66666666666669" height="60" rx="8"/><text x="133.33333333333334" y="71" text-anchor="middle">S1 Registry</text><rect class="node" x="278.6666666666667" y="36" width="242.66666666666669" height="60" rx="8"/><text x="400.0" y="71" text-anchor="middle">S2 Listener</text><path class="edge" d="M256.6666666666667 66 H280.6666666666667" marker-end="url(#arrow)"/><rect class="node" x="545.3333333333334" y="36" width="242.66666666666669" height="60" rx="8"/><text x="666.6666666666667" y="71" text-anchor="middle">S3 Manager</text><path class="edge" d="M523.3333333333334 66 H547.3333333333334" marker-end="url(#arrow)"/></svg><figcaption class="caption">S1 precedes S2, which precedes S3. S4–S6 each build on S3; their horizontal placement below is not a serial blocker chain.</figcaption></figure><table><thead><tr><th>Slice</th><th>Outcome</th><th>Dependency</th></tr></thead><tbody><tr><td>S1</td><td>Channel registry and six validation rules; synthetic entry verifies it without runtime.</td><td>None</td></tr><tr><td>S2</td><td>Socket Mode, deduplication and backfill.</td><td>S1</td></tr><tr><td>S3</td><td>Lease, state machine and terminal controller lifecycle.</td><td>S2</td></tr><tr><td>S4</td><td>Worktree rebind for inline implementation.</td><td>S3</td></tr><tr><td>S5</td><td>Alert-to-operations incident-wake path.</td><td>S3</td></tr><tr><td>S6</td><td>Migration cutover and old-reader retirement.</td><td>S3</td></tr></tbody></table><p>A headless-worker attachment spike and native worker-heartbeat reporting are separately blocked, human-guided follow-ups. They add behavior after S3 and do not block this design. These are sanitized design slice dependencies, not live ticket records.</p></section><section class="review-section"><h2>Review receipt and acceptance criteria</h2><p>The historical source recorded seven adversarial rounds and no Fatal findings in the final four. Its severity trajectory was illustrative, not a fresh measurement; it stopped at an asymptote rather than a formal zero/zero pass.</p><ul><li>Identity lookup timeout queues unresolved messages with bounded retry rather than dropping a genuine user message.</li><li>The ordered ownership flip prevents simultaneous responders; durable intake preserves gap messages.</li><li>The human-idle cap gates block/reap even when jobs dispatch more jobs.</li><li>Completion uses durable job and terminal state.</li></ul><p>Acceptance criteria: a user message launches a visible per-channel controller with a bounded lease; headless job runtime remains independent. Registry validation, message recovery, lifecycle authority and ordered migration retain the safeguards above.</p><p>Residual source limits: agents must reconcile replayed work to avoid repeating completed tasks. Notification-only incident replies and dormant shutdown messages intentionally produce no conversational surface.</p></section>
+<section class="review-section"><h2>Decisions</h2><div class="decisions"><article class="decision-card" aria-labelledby="q1"><h3 id="q1">Q1 · Approve the design?</h3><p class="fact">Approval advances the source design to ticket planning. Seven source review rounds hardened it; this card asks for a content decision.</p><p>Recommend A if the lifecycle, migration safeguards and residual limits above are acceptable.</p><div class="options" role="group" aria-labelledby="q1"><label class="option"><input type="radio" name="Q1" value="A"><span><span class="option-title">Q1A · Approve as written</span> <span class="recommended">Recommended</span><p>Gain: unblocks slice planning immediately</p><p>Cost: later doubts require a change request during the build</p></span></label><label class="option"><input type="radio" name="Q1" value="B"><span><span class="option-title">Q1B · Approve with noted changes</span><p>Gain: allows planning with concrete corrections captured</p><p>Cost: comments must be folded into the design before tickets are cut</p></span></label><label class="option"><input type="radio" name="Q1" value="C"><span><span class="option-title">Q1C · Needs work</span><p>Gain: resolves a real gap before building</p><p>Cost: execution waits for the missing requirement</p></span></label><label class="option"><input type="radio" name="Q1" value="INFO"><span><span class="option-title">Q1INFO · Need more information</span><p>Explain what is missing in the comment. This is an information request, not approval.</p></span></label></div><button type="button" data-clear="Q1">Clear Q1 selection</button><label for="comment-1"><p>Optional comment on Q1</p></label><textarea id="comment-1"></textarea></article><article class="decision-card" aria-labelledby="q2"><h3 id="q2">Q2 · Build mode for S1–S3?</h3><p class="fact">Registry validation, listener and manager are designed for independent autonomous implementation and verification. Mode determines where the user steers.</p><p>Recommend A once Q1 is resolved because the three slices have independently verifiable boundaries.</p><div class="options" role="group" aria-labelledby="q2"><label class="option"><input type="radio" name="Q2" value="A"><span><span class="option-title">Q2A · Autonomous</span> <span class="recommended">Recommended</span><p>Gain: build and test while the user is away; inspect at evaluation checkpoints</p><p>Cost: less steering at each step; design must be settled first</p></span></label><label class="option"><input type="radio" name="Q2" value="B"><span><span class="option-title">Q2B · Human-guided</span><p>Gain: direct steering at each runtime and Socket Mode checkpoint</p><p>Cost: slower and requires the user to be present</p></span></label><label class="option"><input type="radio" name="Q2" value="INFO"><span><span class="option-title">Q2INFO · Need more information</span><p>Explain what is missing in the comment. This is an information request, not approval.</p></span></label></div><button type="button" data-clear="Q2">Clear Q2 selection</button><label for="comment-2"><p>Optional comment on Q2</p></label><textarea id="comment-2"></textarea></article><article class="decision-card" aria-labelledby="q3"><h3 id="q3">Q3 · Slice sequencing?</h3><p class="fact">S1 schema and six validation rules can be verified using a synthetic channel, without a running listener.</p><p>Recommend A to stabilize the schema before its first runtime consumer.</p><div class="options" role="group" aria-labelledby="q3"><label class="option"><input type="radio" name="Q3" value="A"><span><span class="option-title">Q3A · S1 first, then S2 → S3</span> <span class="recommended">Recommended</span><p>Gain: smallest independently verifiable foundation lands first</p><p>Cost: no visible behavior until the listener and manager land</p></span></label><label class="option"><input type="radio" name="Q3" value="B"><span><span class="option-title">Q3B · S1 and S2 in parallel</span><p>Gain: listener work starts earlier</p><p>Cost: schema changes can cause churn across two simultaneous surfaces</p></span></label><label class="option"><input type="radio" name="Q3" value="INFO"><span><span class="option-title">Q3INFO · Need more information</span><p>Explain what is missing in the comment. This is an information request, not approval.</p></span></label></div><button type="button" data-clear="Q3">Clear Q3 selection</button><label for="comment-3"><p>Optional comment on Q3</p></label><textarea id="comment-3"></textarea></article></div></section>
+<footer class="review-footer"><p>Source: historical on-demand channel agents design and review, 2026-08-22. Private tracker links and infrastructure identifiers are omitted.</p><p>Scope: channel controllers, durable delivery, lifecycle and migration. Excludes the independent headless-worker attachment and heartbeat follow-ups. Approval is a design decision; choosing a build mode here launches nothing.</p><p>Example revision: 1 · adapted 2026-10-25 by the planning package. The complete sanitized proposal and acceptance criteria are embedded above. No tracker is connected.</p></footer>
+</main><script>
+document.querySelectorAll('[data-clear]').forEach(function(button) {
+  button.addEventListener('click', function() {
+    document.querySelectorAll('input[type="radio"]').forEach(function(input) {
+      if (input.name === button.dataset.clear) input.checked = false;
+    });
+  });
+});
+</script></body></html>

@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Review page kit</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#15181d; --dim:#5c6470; --line:#d5d9e0;
+  --node:#ffffff; --nodeline:#c3c9d4;
+  --hot:#d92b5c; --hotbg:#fdeaf0; --hotline:#d92b5c;
+  --off:#8b929c; --offbg:#eceef1;
+  --warn:#b3541e; --warnbg:#fdf0e6;
+  --ok:#0f8a6a; --okbg:#e6f5f0;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0e1116; --panel:#161b22; --ink:#e7ecf3; --dim:#9aa4b2; --line:#2a313c;
+    --node:#1c222b; --nodeline:#39424f;
+    --hot:#ff5d86; --hotbg:#3a1424; --hotline:#ff5d86;
+    --off:#6f7885; --offbg:#20262f;
+    --warn:#e8a06a; --warnbg:#33241a;
+    --ok:#3ecfa5; --okbg:#12302a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1116; --panel:#161b22; --ink:#e7ecf3; --dim:#9aa4b2; --line:#2a313c;
+  --node:#1c222b; --nodeline:#39424f;
+  --hot:#ff5d86; --hotbg:#3a1424; --hotline:#ff5d86;
+  --off:#6f7885; --offbg:#20262f;
+  --warn:#e8a06a; --warnbg:#33241a;
+  --ok:#3ecfa5; --okbg:#12302a;
+}
+:root[data-theme="light"]{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#15181d; --dim:#5c6470; --line:#d5d9e0;
+  --node:#ffffff; --nodeline:#c3c9d4;
+  --hot:#d92b5c; --hotbg:#fdeaf0; --hotline:#d92b5c;
+  --off:#8b929c; --offbg:#eceef1;
+  --warn:#b3541e; --warnbg:#fdf0e6;
+  --ok:#0f8a6a; --okbg:#e6f5f0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.02em}
+h2{font-size:19px;margin:0 0 2px;letter-spacing:-.01em}
+h3{font-size:14px;margin:18px 0 8px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em}
+.sub{color:var(--dim);font-size:13px;margin:0}
+section{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:20px;margin:22px 0}
+section.hot{border-color:var(--hotline);box-shadow:0 0 0 3px color-mix(in srgb,var(--hotline) 12%,transparent)}
+.hotflag{display:inline-block;background:var(--hotbg);color:var(--hot);border:1px solid var(--hot);
+  border-radius:99px;padding:1px 9px;font-size:11px;font-weight:700;letter-spacing:.04em;
+  vertical-align:middle;margin-left:8px}
+.src{margin-top:14px;padding-top:10px;border-top:1px dashed var(--line);
+  font-family:var(--mono);font-size:11.5px;color:var(--dim);word-break:break-word}
+.src b{color:var(--dim);font-weight:600}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+svg{display:block;max-width:100%;height:auto}
+svg text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:var(--dim);margin-top:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;
+  vertical-align:-1px;border:2px solid currentColor}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(228px,1fr))}
+.card{background:var(--node);border:1px solid var(--nodeline);border-radius:9px;padding:10px 11px}
+.card.dead{opacity:.62;border-style:dashed}
+.card .t{font-family:var(--mono);font-size:12.5px;font-weight:600;word-break:break-all}
+.card .m{font-size:11.5px;color:var(--dim);margin-top:3px;overflow-wrap:anywhere}
+.pill{display:inline-block;border-radius:99px;padding:1px 7px;font-size:10.5px;font-weight:700;
+  letter-spacing:.03em;margin-right:4px;margin-top:5px;border:1px solid transparent}
+.p-run{background:var(--okbg);color:var(--ok);border-color:var(--ok)}
+.p-idle{background:var(--offbg);color:var(--off);border-color:var(--nodeline)}
+.p-off{background:var(--offbg);color:var(--off);border-color:var(--off)}
+.p-warn{background:var(--warnbg);color:var(--warn);border-color:var(--warn)}
+.p-hot{background:var(--hotbg);color:var(--hot);border-color:var(--hot)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);
+  border-bottom:1px solid var(--line);padding:6px 8px;white-space:nowrap}
+td{border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top}
+td.mono,th.mono{font-family:var(--mono);font-size:12px}
+ul.find{margin:6px 0 0;padding-left:0;list-style:none}
+ul.find li{border-left:3px solid var(--warn);background:var(--warnbg);border-radius:0 7px 7px 0;
+  padding:9px 12px;margin-bottom:8px;font-size:13.5px}
+ul.find li.sev-hot{border-left-color:var(--hot);background:var(--hotbg)}
+ul.find li b{font-family:var(--mono);font-size:12.5px}
+.two{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+code{font-family:var(--mono);font-size:12px;background:var(--offbg);padding:1px 4px;border-radius:4px;
+  overflow-wrap:anywhere}
+section{overflow-x:hidden}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
+.toc a{font-size:12px;text-decoration:none;color:var(--ink);background:var(--node);
+  border:1px solid var(--nodeline);border-radius:99px;padding:3px 10px}
+.toc a.hot{border-color:var(--hot);color:var(--hot)}
+
+/* Review page layer. The neutral diagram base above is copied verbatim. */
+:root { color-scheme:light dark }
+:root[data-theme="light"] { color-scheme:light }
+:root[data-theme="dark"] { color-scheme:dark }
+main { max-width:1080px; margin:auto; padding:32px 24px 72px }
+h1 { font-size:32px; line-height:1.2; margin-bottom:12px }
+h2 { font-size:21px; margin-bottom:14px }
+h3 { color:var(--ink); text-transform:none; letter-spacing:0; font-size:17px }
+a { color:var(--ink); text-underline-offset:3px }
+p { max-width:78ch }
+.approval-bar { border:2px solid var(--ink); border-radius:12px; padding:20px 24px;
+  margin:24px 0; background:var(--panel) }
+.approval-bar p { margin:6px 0 }
+.reply-codes { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px }
+.reply-codes code { padding:6px 10px; border:1px solid var(--nodeline) }
+.review-section { padding:24px; margin:24px 0 }
+.section-label { font:12px var(--mono); color:var(--dim); margin:0 0 8px }
+.diagram-frame { overflow-x:auto; border:1px solid var(--line); border-radius:8px;
+  background:var(--bg); padding:16px; margin:16px 0 }
+.diagram-frame svg { width:100%; min-width:640px }
+.diagram-frame text { fill:var(--ink) }
+.diagram-frame .node { fill:var(--node); stroke:var(--nodeline); stroke-width:1.5 }
+.diagram-frame .group { fill:none; stroke:var(--line); stroke-width:1.5 }
+.diagram-frame .edge { fill:none; stroke:var(--dim); stroke-width:1.5 }
+.diagram-frame .node-label { font:14px var(--mono) }
+.diagram-frame .edge-label { font:12px var(--mono); fill:var(--dim) }
+.diagram-frame .blocked { stroke-dasharray:5 4 }
+.caption { font-size:14px; color:var(--dim); margin:12px 0 0 }
+.pair { display:grid; grid-template-columns:1fr 1fr; gap:16px }
+.pane { border:1px solid var(--line); border-radius:8px; padding:16px }
+.pane h3 { margin-top:0 }
+.decisions { display:grid; gap:18px }
+.decision-card { min-width:0; border:1px solid var(--nodeline); border-radius:10px; padding:22px }
+.decision-card h3 { margin:0 0 12px }
+.fact { background:var(--offbg); border-radius:6px; padding:12px 16px; margin:12px 0 }
+.options { display:grid; gap:10px; margin:16px 0 }
+.option { position:relative; display:grid; grid-template-columns:24px minmax(0,1fr); gap:12px;
+  align-items:start; padding:16px; border:1px solid var(--nodeline); border-radius:8px;
+  background:var(--panel); cursor:pointer }
+.option input { width:20px; height:20px; margin:2px 0; accent-color:var(--ink) }
+.option p { margin:6px 0 0; font-size:14px }
+.option-title { font-weight:600 }
+.recommended { font:12px var(--mono); color:var(--dim) }
+/* A recommendation is a label, never a selected state. Native checked state is
+   the source of truth for pointer, keyboard and restored form selections. */
+.option:has(input:checked) { border-color:var(--ok); box-shadow:0 0 0 2px var(--ok);
+  background:var(--okbg) }
+.option:has(input:checked) .option-title { font-weight:800 }
+.option:has(input:checked) .recommended { color:inherit }
+.option:has(input:checked) code { background:var(--panel); color:var(--ink) }
+.option:has(input:checked) .option-title::before { content:"✓ Selected · "; font-weight:800 }
+.option:focus-within { outline:3px solid var(--dim); outline-offset:3px }
+textarea { display:block; width:100%; min-height:80px; margin-top:8px; border:1px solid var(--nodeline);
+  border-radius:6px; padding:12px; font:inherit; color:var(--ink); background:var(--panel) }
+button { min-height:44px; padding:10px 16px; border:1px solid var(--ink); border-radius:6px;
+  background:var(--ink); color:var(--panel); font:600 14px system-ui; cursor:pointer }
+button.alt, button.plain { background:var(--panel); color:var(--ink) }
+button:disabled { opacity:.6; cursor:default }
+.btns { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px }
+.review-footer { border-top:1px solid var(--line); margin-top:28px; padding-top:20px;
+  color:var(--dim); font-size:13px; overflow-wrap:anywhere }
+.review-footer p { margin:6px 0 }
+@media (max-width:640px) {
+  main { padding:20px 12px 48px } h1 { font-size:26px }
+  .review-section,.approval-bar,.decision-card { padding:16px }
+  .pair { grid-template-columns:1fr }
+}
+@media print {
+  :root,:root[data-theme] { --bg:#fff; --panel:#fff; --ink:#111; --dim:#444; --line:#aaa;
+    --node:#fff; --nodeline:#777; --off:#555; --offbg:#eee;
+    --ok:#075b43; --okbg:#e8f5ef; --warn:#76370f; --warnbg:#fff3e8;
+    --hot:#95203d; --hotbg:#fceef2; --hotline:#95203d;
+    color-scheme:light }
+  body { background:#fff; color:#111; font-size:11pt }
+  main { max-width:none; padding:0 }
+  .review-section { overflow:visible; padding:16px; margin:16px 0 }
+  h2,h3 { break-after:avoid }
+  .approval-bar,.option,.diagram-frame,.review-footer { break-inside:avoid }
+  .diagram-frame { overflow:visible; padding:8px }
+  .diagram-frame svg { min-width:0 }
+  .option:has(input:checked) { background:#fff; color:#111;
+    border:3px solid var(--ok); padding:14px; box-shadow:0 0 0 2px var(--ok) }
+  .option:has(input:checked) .option-title { font-weight:800 }
+  .option:has(input:checked) .option-title::before { content:"✓ Selected · "; font-weight:800 }
+  .option input { appearance:auto; accent-color:auto }
+  textarea { min-height:40px }
+}
+</style>
+<main>
+<header><p class="section-label">Planning package · review page kit</p>
+<h1>Review title</h1><p class="sub">Author · date · source revision. Replace this fixture with the artifact being judged.</p></header>
+
+<!-- Building block: approval bar. Chat codes remain visible with a hosting handler. -->
+<aside class="approval-bar" aria-label="Approval instructions">
+<strong>Reply in chat after reading the page.</strong>
+<p>Approve the proposal, include your question choices, or describe changes. Selecting an option below only prepares your answer; it does not submit it.</p>
+<div class="reply-codes"><code>APPROVE</code><code>APPROVE Q1A</code><code>CHANGES: &lt;notes&gt;</code></div>
+</aside>
+
+<!-- Building block: section. The calling skill owns headings and order. -->
+<section class="review-section" aria-labelledby="why">
+<h2 id="why">Why this exists</h2>
+<div class="pair"><div class="pane"><h3>Before</h3><p>Review pages vary in appearance.</p></div>
+<div class="pane"><h3>After</h3><p>One review page kit supplies the look; each skill supplies the structure.</p></div></div>
+
+<!-- Building block: diagram frame. Replace the diagram with source-grounded content. -->
+<figure class="diagram-frame" aria-label="Page composition">
+<svg viewBox="0 0 760 130" role="img" aria-label="The skill supplies structure to the page; the kit supplies its appearance.">
+<defs><marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--dim)"/></marker></defs>
+<rect class="node" x="10" y="25" width="190" height="70" rx="8"/><text class="node-label" x="105" y="65" text-anchor="middle">Skill structure</text>
+<rect class="node" x="285" y="25" width="190" height="70" rx="8"/><text class="node-label" x="380" y="65" text-anchor="middle">Review page</text>
+<rect class="node" x="560" y="25" width="190" height="70" rx="8"/><text class="node-label" x="655" y="65" text-anchor="middle">Kit appearance</text>
+<path class="edge" d="M198 60 H287" marker-end="url(#flow-arrow)"/>
+<path class="edge" d="M562 60 H473" marker-end="url(#flow-arrow)"/>
+</svg></figure>
+<p class="caption">The same stylesheet is inlined into every page, including hosted pages.</p>
+</section>
+
+<!-- Building block: ticket graph. Fixture edges are illustrative, not live dependencies. -->
+<section class="review-section" aria-labelledby="tickets"><h2 id="tickets">Ticket graph</h2>
+<p>Illustrative fixture: replace nodes with repo-qualified ticket links and titles and edges with queried blockers before delivery.</p>
+<figure class="diagram-frame ticket-graph">
+<svg viewBox="0 0 760 150" role="img" aria-label="Illustrative dependency: the kit ticket blocks the examples ticket. Build the kit first.">
+<defs><marker id="ticket-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--dim)"/></marker></defs>
+<rect class="node" x="20" y="30" width="270" height="80" rx="8"/><text class="node-label" x="155" y="63" text-anchor="middle">1 · Build kit</text><text class="edge-label" x="155" y="87" text-anchor="middle">Ready</text>
+<rect class="node blocked" x="470" y="30" width="270" height="80" rx="8"/><text class="node-label" x="605" y="63" text-anchor="middle">2 · Build examples</text><text class="edge-label" x="605" y="87" text-anchor="middle">Blocked by kit</text>
+<path class="edge" d="M288 70 H472" marker-end="url(#ticket-arrow)"/><text class="edge-label" x="380" y="58" text-anchor="middle">blocks</text>
+</svg></figure></section>
+
+<section class="review-section" aria-labelledby="decisions"><h2 id="decisions">Decisions</h2>
+<!-- Building block: decision card. Repeat for each open question (at most five). -->
+<article class="decision-card" aria-labelledby="q1"><h3 id="q1">Q1 · One shared look?</h3>
+<p class="fact"><strong>Deciding fact:</strong> a shared stylesheet makes pages consistent while preserving each skill's section order.</p>
+<p>Recommend A because it keeps maintenance in one place. Fixture question; this is not a recorded decision.</p>
+<div class="options" role="group" aria-labelledby="q1">
+<label class="option"><input type="radio" name="Q1" value="A"><span><span class="option-title">Q1A · Use the review page kit</span> <span class="recommended">Recommended</span><p>Gain: consistent appearance and one stylesheet to maintain.</p><p>Cost: custom page styling must fit the shared building blocks.</p></span></label>
+<label class="option"><input type="radio" name="Q1" value="B"><span><span class="option-title">Q1B · Keep page-specific styling</span><p>Gain: unrestricted appearance for each page.</p><p>Cost: each page must maintain its own themes and print states.</p></span></label>
+<label class="option"><input type="radio" name="Q1" value="INFO"><span><span class="option-title">Q1INFO · Need more information</span><p>An information request is not approval.</p></span></label>
+</div>
+<button type="button" data-clear="Q1">Clear Q1 selection</button>
+<label for="q1-comment"><p>Optional comment on Q1</p></label><textarea id="q1-comment"></textarea>
+</article></section>
+
+<!-- Building block: footer. Keep source location, revision and approval scope explicit. -->
+<footer class="review-footer"><p>Full text: &lt;source location&gt; · revision &lt;revision&gt; · &lt;author and date&gt;.</p>
+<p>Done means: all source acceptance criteria met. Approval scope: &lt;what this reply authorizes&gt;.</p>
+<p>Originating epic: &lt;repo-qualified link and title, if applicable&gt;. Out of scope: &lt;scope exclusions&gt;.</p></footer>
+</main>
+<script>
+document.querySelectorAll('[data-clear]').forEach(function (button) {
+  button.addEventListener('click', function () {
+    document.querySelectorAll('input[type="radio"]').forEach(function (input) {
+      if (input.name === button.dataset.clear) input.checked = false;
+    });
+  });
+});
+</script>
+</html>
