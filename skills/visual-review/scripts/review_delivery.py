@@ -41,7 +41,8 @@ def deliver(page: Path, repo: Path, settings: dict, settings_file: Path,
     if 'skill' in binding:
         # Native skill execution belongs to the running agent. It must read the
         # named skill, then pass this request without re-entering the renderer.
-        return {**request, 'skill': binding['skill']}
+        return {**request, 'skill': binding['skill'], 'settings': settings,
+                'settings_file': str(settings_file)}
     argv = list(binding['command'])
     argv[0] = os.path.expanduser(argv[0])
     if '/' in argv[0] and not Path(argv[0]).is_absolute():

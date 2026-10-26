@@ -155,14 +155,33 @@ def test_spec_mapping_includes_approval_contract_and_retains_question_limit():
 
 
 def test_skill_binding_hands_local_page_to_native_agent(delivery):
-    run, _, _, _ = delivery
+    run, profile, repo, tmp = delivery
     result, output = run({'skill': 'team-review-host'}, skills=('team-review-host',))
     assert result.returncode == 0, result.stderr
     response = json.loads(result.stdout)
     assert response['skill'] == 'team-review-host'
     assert response['local_html_path'] == str(output)
+    assert response['settings'] == json.loads((tmp / 'resolved.json').read_text())
+    assert response['settings_file'] == str(profile)
     assert 'approval' not in response
     assert 'handler_result' not in response
+
+    # A hosting skill can reuse the handoff without resolving or hosting again.
+    settings = tmp / 'host-settings.json'
+    settings.write_text(json.dumps(response['settings']))
+    hosted_page = tmp / 'host-review.html'
+    rendered = subprocess.run([
+        sys.executable, str(DELIVERY), '--repo', str(repo),
+        '--body', str(FIXTURE / 'spec-review-body.html'), '--out', str(hosted_page),
+        '--settings', str(settings), '--settings-file', response['settings_file'],
+        '--render-only',
+    ], text=True, capture_output=True)
+    assert rendered.returncode == 0, rendered.stderr
+    rendered_response = json.loads(rendered.stdout)
+    assert rendered_response['render_only'] is True
+    assert rendered_response['local_html_path'] == str(hosted_page)
+    assert 'skill' not in rendered_response
+    assert hosted_page.read_text() == output.read_text()
 
 
 @pytest.mark.parametrize('stdout', ['', ' \t\n'])
