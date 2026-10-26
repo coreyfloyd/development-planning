@@ -108,7 +108,7 @@ building blocks. A configured review-hosting handler can deliver the same page.
 Download the five assets from a tagged GitHub release. Before extracting, run:
 
 ```sh
-bash verify-release.sh development-planning-0.1.0.tar.gz development-planning-release.asc 09674AFF392661238F4ACBD9F32B3A412CD5EFC5
+bash verify-release.sh development-planning-0.1.1.tar.gz development-planning-release.asc 09674AFF392661238F4ACBD9F32B3A412CD5EFC5
 ```
 
 Requires Bash, GnuPG, and `shasum`. The checksum carries the maintainer's
