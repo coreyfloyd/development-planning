@@ -173,9 +173,12 @@ A resolution error stops the affected step before page delivery. Builtin local
 HTML returns `local_html_path` and chat approval; a command receives that path,
 `step`, `repo` and `repo_facts` as JSON on stdin, with its resolved argv and the
 target repo as working directory. Follow its returned delivery/approval protocol.
-A skill binding returns the named skill and the same request: read that skill
-and perform its protocol in the running tool. Do not treat a returned skill
-request as completed hosting. Failure stops hosting and reports the originating
+A skill binding returns the named skill and the same request, plus `settings`
+(the complete resolved settings) and `settings_file` (the originating planning
+profile path). Pass both to the skill so it can reuse the resolution for any
+render-only substep. Read that skill and perform its protocol in the running tool.
+Do not treat a returned skill request as completed hosting. Failure stops hosting
+and reports the originating
 settings file and `review_hosting` entry; retain the page and never retry through
 a default or shadowed binding. A handler calling this renderer uses
 `--render-only` to obtain the local page without another hosting invocation.
