@@ -35,7 +35,7 @@ def test_kit_is_standalone_and_has_all_six_reusable_blocks():
     assert not page.resources, page.resources
     assert not re.search(r'@import|url\s*\(\s*["\']?(?!#)[a-z/]', html, re.I)
     assert {'approval-bar', 'review-section', 'diagram-frame', 'decision-card',
-            'ticket-graph', 'review-footer'} <= page.classes
+            'ticket-graph', 'review-footer', 'toc', 'find', 'legend'} <= page.classes
     assert all(code in html for code in ('APPROVE', 'APPROVE Q1A', 'CHANGES:'))
     css = (kit / 'assets/review-page.css').read_text()
     assert re.search(r'<style>\s*' + re.escape(css) + r'\s*</style>', html)
@@ -76,3 +76,28 @@ def test_worked_examples_are_complete_offline_kit_pages():
 def test_example_starts_with_doctype(name):
     html = (ROOT / 'skills/visual-review/examples' / name).read_text()
     assert html.startswith('<!DOCTYPE html>\n'), name
+
+
+def test_diagram_text_is_always_legible():
+    """SVG text without a fill draws black, unreadable on a dark node."""
+    directory = ROOT / 'skills/visual-review'
+    css = (directory / 'assets/review-page.css').read_text()
+    assert '.diagram-frame text { fill:var(--ink) }' in css
+    for path in [directory / 'kit.html', *sorted((directory / 'examples').glob('*.html'))]:
+        body = re.sub(r'<style>.*?</style>', '', path.read_text(), flags=re.S)
+        for svg in re.findall(r'<svg.*?</svg>', body, re.S):
+            assert svg in ''.join(re.findall(r'<figure class="diagram-frame[^"]*".*?</figure>', body, re.S)), path.name
+            assert not re.search(r'<text[^>]*\sfill=', svg), path.name
+
+
+def test_colored_diagrams_carry_a_legend():
+    directory = ROOT / 'skills/visual-review'
+    for path in [directory / 'kit.html', *sorted((directory / 'examples').glob('*.html'))]:
+        body = re.sub(r'<style>.*?</style>', '', path.read_text(), flags=re.S)
+        for match in re.finditer(r'<figure class="diagram-frame[^"]*".*?</figure>', body, re.S):
+            hues = set(re.findall(r'class="(?:node|group) [^"]*?(c-(?:blue|purple|teal|amber))', match.group(0)))
+            if hues:
+                tail = body[match.end():match.end() + 600]
+                legend = re.search(r'<div class="legend">.*?</div>', match.group(0) + tail, re.S)
+                assert legend, path.name
+                assert hues <= set(re.findall(r'<i class="(c-[a-z]+)"', legend.group(0))), (path.name, hues)
