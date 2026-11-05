@@ -150,6 +150,57 @@ button:disabled { opacity:.6; cursor:default }
 .review-footer { border-top:1px solid var(--line); margin-top:28px; padding-top:20px;
   color:var(--dim); font-size:13px; overflow-wrap:anywhere }
 .review-footer p { margin:6px 0 }
+/* Color layer. Four category hues mark kinds of component in a diagram
+   (a page's legend says which kind each hue means); ok/warn/hot stay status. */
+:root { --blue:#2f6fdb; --bluebg:#e9f0fc; --purple:#7a41c4; --purplebg:#f2ebfa;
+  --teal:#0f8a6a; --tealbg:#e6f5f0; --amber:#a86400; --amberbg:#fbf1df }
+@media (prefers-color-scheme:dark) {
+  :root { --blue:#6ba4ff; --bluebg:#15233a; --purple:#b98cff; --purplebg:#251b37;
+    --teal:#3ecfa5; --tealbg:#12302a; --amber:#e0a44a; --amberbg:#33261a }
+}
+:root[data-theme="dark"] { --blue:#6ba4ff; --bluebg:#15233a; --purple:#b98cff; --purplebg:#251b37;
+  --teal:#3ecfa5; --tealbg:#12302a; --amber:#e0a44a; --amberbg:#33261a }
+:root[data-theme="light"] { --blue:#2f6fdb; --bluebg:#e9f0fc; --purple:#7a41c4; --purplebg:#f2ebfa;
+  --teal:#0f8a6a; --tealbg:#e6f5f0; --amber:#a86400; --amberbg:#fbf1df }
+.approval-bar { border:1.5px solid var(--blue); box-shadow:0 0 0 3px var(--bluebg) }
+.reply-codes code { border-color:var(--blue); color:var(--blue); background:var(--bluebg) }
+.toc a:hover { border-color:var(--blue) }
+.toc a.hot { background:var(--hotbg) }
+.pane.before h3, .pane.after h3 { font-size:12px; text-transform:uppercase; letter-spacing:.07em }
+.pane.before h3 { color:var(--hot) }
+.pane.after h3 { color:var(--ok) }
+.decision-card { border-left:4px solid var(--blue) }
+.decision-card h3 .qid { font-family:var(--mono); color:var(--blue); margin-right:6px }
+.fact { border:1px dashed var(--blue); background:var(--bluebg) }
+.option .gain { color:var(--ok) }
+.option .cost { color:var(--warn) }
+.option:has(input:checked) .gain, .option:has(input:checked) .cost { color:inherit }
+button.approve { background:var(--okbg); border-color:var(--ok); color:var(--ok) }
+button.reject { background:var(--hotbg); border-color:var(--hot); color:var(--hot) }
+button.approve:hover { background:var(--ok); color:var(--panel) }
+button.reject:hover { background:var(--hot); color:var(--panel) }
+ul.find li.sev-ok { border-left-color:var(--ok); background:var(--okbg) }
+ul.find li.sev-info { border-left-color:var(--blue); background:var(--bluebg) }
+.p-ok { background:var(--okbg); color:var(--ok); border-color:var(--ok) }
+.p-info { background:var(--bluebg); color:var(--blue); border-color:var(--blue) }
+.diagram-frame .node-sub { font-size:12px; fill:var(--dim) }
+.diagram-frame .group-label { font:700 12px var(--mono); fill:var(--dim) }
+.diagram-frame .node.c-blue, .diagram-frame .group.c-blue { stroke:var(--blue); stroke-width:2 }
+.diagram-frame .node.c-purple, .diagram-frame .group.c-purple { stroke:var(--purple); stroke-width:2 }
+.diagram-frame .node.c-teal, .diagram-frame .group.c-teal { stroke:var(--teal); stroke-width:2 }
+.diagram-frame .node.c-amber, .diagram-frame .group.c-amber { stroke:var(--amber); stroke-width:2 }
+.diagram-frame .node.c-hot { stroke:var(--hot); stroke-width:2; fill:var(--hotbg) }
+.diagram-frame .node.c-ok { stroke:var(--ok); stroke-width:2; fill:var(--okbg) }
+.diagram-frame .node.c-warn { stroke:var(--warn); stroke-width:2; fill:var(--warnbg) }
+.diagram-frame .node.c-blue.tint { fill:var(--bluebg) }
+.diagram-frame .node.c-purple.tint { fill:var(--purplebg) }
+.diagram-frame .node.c-teal.tint { fill:var(--tealbg) }
+.diagram-frame .node.c-amber.tint { fill:var(--amberbg) }
+.diagram-frame .edge.c-hot { stroke:var(--hot) }
+.legend i.c-blue { color:var(--blue) } .legend i.c-purple { color:var(--purple) }
+.legend i.c-teal { color:var(--teal) } .legend i.c-amber { color:var(--amber) }
+.legend i.c-hot { color:var(--hot) } .legend i.c-ok { color:var(--ok) } .legend i.c-warn { color:var(--warn) }
+.legend i.c-off { color:var(--nodeline); border-style:dashed }
 @media (max-width:640px) {
   main { padding:20px 12px 48px } h1 { font-size:26px }
   .review-section,.approval-bar,.decision-card { padding:16px }
@@ -160,6 +211,8 @@ button:disabled { opacity:.6; cursor:default }
     --node:#fff; --nodeline:#777; --off:#555; --offbg:#eee;
     --ok:#075b43; --okbg:#e8f5ef; --warn:#76370f; --warnbg:#fff3e8;
     --hot:#95203d; --hotbg:#fceef2; --hotline:#95203d;
+    --blue:#1d4fa8; --bluebg:#eef3fc; --purple:#5a2c99; --purplebg:#f4eefb;
+    --teal:#075b43; --tealbg:#e8f5ef; --amber:#76470a; --amberbg:#fbf3e6;
     color-scheme:light }
   body { background:#fff; color:#111; font-size:11pt }
   main { max-width:none; padding:0 }

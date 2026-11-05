@@ -100,8 +100,10 @@ skill's **review page kit** in local and configured hosting modes alike:
 | Building block | Classes and contract |
 |---|---|
 | Approval bar | `.approval-bar`, `.reply-codes`: show `APPROVE`, `APPROVE Q1B Q2A`, `CHANGES: <notes>` at the top, including when a host adds response controls. Explain what approval authorizes. |
-| Section | `.review-section`, `.pair`, `.pane`: retain the calling skill's headings and order. |
-| Diagram frame | `.diagram-frame`: scroll horizontally on narrow screens; use labelled inline SVG and neutral `.node` / `.edge` primitives. |
+| Section tabs | `nav.toc` under the header: one link per section; `a.hot` marks a section that needs the reader's answer. |
+| Section | `.review-section`, `.pair`, `.pane`: retain the calling skill's headings and order. Mark the comparison panes `.pane.before` and `.pane.after`. |
+| Diagram frame | `.diagram-frame`: scroll horizontally on narrow screens; use labelled inline SVG with `.node`, `.group`, `.edge`, `.node-label`, `.node-sub` and `.group-label`. Color nodes and groups by kind and follow the figure with a `.legend`. |
+| Findings list | `ul.find`: one row per finding or result; `li.sev-hot` Fatal, plain `li` Significant, `li.sev-ok` applied or passed, `li.sev-info` neutral note. |
 | Decision card | `.decision-card`, `.options`, `.option`, `.option-title`: context, options with gain/cost, recommendation and rationale, reply codes, comments. |
 | Ticket graph | `.ticket-graph` inside `.diagram-frame`: topological order, linked ticket titles, solid blocker edges and visibly labelled `.blocked` nodes; dashed annotations for suggested order only. |
 | Footer | `.review-footer`: full source and revision, acceptance reminder, approval scope, originating epic and exclusions. |
@@ -120,8 +122,20 @@ submission endpoint. Local pages show reply codes; configured handlers own their
 response protocol while retaining those codes as a fallback.
 
 Use accessible SVG (`role="img"`, `aria-label`), theme-aware variables and horizontal
-overflow containers. Reserve accent colors for decisions and controls; ordinary
-nodes use neutral colors. Use state pills and tabular numbers for status/counts.
+overflow containers. Color carries meaning, in two families:
+
+- Category hues `c-blue`, `c-purple`, `c-teal`, `c-amber` mark the kind of a
+  diagram node or group (for example service, agent, store, daemon). Add `tint`
+  to fill a node, typically a store. A page keeps one meaning per hue across its
+  diagrams, and every colored diagram has a `.legend` naming each hue it uses.
+- Status colors `c-ok`, `c-warn`, `c-hot` (and `.pill` `p-ok`, `p-warn`, `p-hot`,
+  `p-info`) mark state: done or ready, needs attention, blocked or needs the reader.
+
+Leave a node neutral only when its kind does not matter. Never set an SVG text
+color by hand; the stylesheet gives all diagram text the ink color, and
+`.node-sub` / `.edge-label` the dim color. Approval controls use `button.approve`
+and `button.reject`; decision cards mark the question id with `.qid` and option
+trade-offs with `p.gain` and `p.cost`. Use tabular numbers for counts.
 
 ## Delivery and decisions
 

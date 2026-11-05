@@ -156,6 +156,57 @@ button:disabled { opacity:.6; cursor:default }
 .review-footer { border-top:1px solid var(--line); margin-top:28px; padding-top:20px;
   color:var(--dim); font-size:13px; overflow-wrap:anywhere }
 .review-footer p { margin:6px 0 }
+/* Color layer. Four category hues mark kinds of component in a diagram
+   (a page's legend says which kind each hue means); ok/warn/hot stay status. */
+:root { --blue:#2f6fdb; --bluebg:#e9f0fc; --purple:#7a41c4; --purplebg:#f2ebfa;
+  --teal:#0f8a6a; --tealbg:#e6f5f0; --amber:#a86400; --amberbg:#fbf1df }
+@media (prefers-color-scheme:dark) {
+  :root { --blue:#6ba4ff; --bluebg:#15233a; --purple:#b98cff; --purplebg:#251b37;
+    --teal:#3ecfa5; --tealbg:#12302a; --amber:#e0a44a; --amberbg:#33261a }
+}
+:root[data-theme="dark"] { --blue:#6ba4ff; --bluebg:#15233a; --purple:#b98cff; --purplebg:#251b37;
+  --teal:#3ecfa5; --tealbg:#12302a; --amber:#e0a44a; --amberbg:#33261a }
+:root[data-theme="light"] { --blue:#2f6fdb; --bluebg:#e9f0fc; --purple:#7a41c4; --purplebg:#f2ebfa;
+  --teal:#0f8a6a; --tealbg:#e6f5f0; --amber:#a86400; --amberbg:#fbf1df }
+.approval-bar { border:1.5px solid var(--blue); box-shadow:0 0 0 3px var(--bluebg) }
+.reply-codes code { border-color:var(--blue); color:var(--blue); background:var(--bluebg) }
+.toc a:hover { border-color:var(--blue) }
+.toc a.hot { background:var(--hotbg) }
+.pane.before h3, .pane.after h3 { font-size:12px; text-transform:uppercase; letter-spacing:.07em }
+.pane.before h3 { color:var(--hot) }
+.pane.after h3 { color:var(--ok) }
+.decision-card { border-left:4px solid var(--blue) }
+.decision-card h3 .qid { font-family:var(--mono); color:var(--blue); margin-right:6px }
+.fact { border:1px dashed var(--blue); background:var(--bluebg) }
+.option .gain { color:var(--ok) }
+.option .cost { color:var(--warn) }
+.option:has(input:checked) .gain, .option:has(input:checked) .cost { color:inherit }
+button.approve { background:var(--okbg); border-color:var(--ok); color:var(--ok) }
+button.reject { background:var(--hotbg); border-color:var(--hot); color:var(--hot) }
+button.approve:hover { background:var(--ok); color:var(--panel) }
+button.reject:hover { background:var(--hot); color:var(--panel) }
+ul.find li.sev-ok { border-left-color:var(--ok); background:var(--okbg) }
+ul.find li.sev-info { border-left-color:var(--blue); background:var(--bluebg) }
+.p-ok { background:var(--okbg); color:var(--ok); border-color:var(--ok) }
+.p-info { background:var(--bluebg); color:var(--blue); border-color:var(--blue) }
+.diagram-frame .node-sub { font-size:12px; fill:var(--dim) }
+.diagram-frame .group-label { font:700 12px var(--mono); fill:var(--dim) }
+.diagram-frame .node.c-blue, .diagram-frame .group.c-blue { stroke:var(--blue); stroke-width:2 }
+.diagram-frame .node.c-purple, .diagram-frame .group.c-purple { stroke:var(--purple); stroke-width:2 }
+.diagram-frame .node.c-teal, .diagram-frame .group.c-teal { stroke:var(--teal); stroke-width:2 }
+.diagram-frame .node.c-amber, .diagram-frame .group.c-amber { stroke:var(--amber); stroke-width:2 }
+.diagram-frame .node.c-hot { stroke:var(--hot); stroke-width:2; fill:var(--hotbg) }
+.diagram-frame .node.c-ok { stroke:var(--ok); stroke-width:2; fill:var(--okbg) }
+.diagram-frame .node.c-warn { stroke:var(--warn); stroke-width:2; fill:var(--warnbg) }
+.diagram-frame .node.c-blue.tint { fill:var(--bluebg) }
+.diagram-frame .node.c-purple.tint { fill:var(--purplebg) }
+.diagram-frame .node.c-teal.tint { fill:var(--tealbg) }
+.diagram-frame .node.c-amber.tint { fill:var(--amberbg) }
+.diagram-frame .edge.c-hot { stroke:var(--hot) }
+.legend i.c-blue { color:var(--blue) } .legend i.c-purple { color:var(--purple) }
+.legend i.c-teal { color:var(--teal) } .legend i.c-amber { color:var(--amber) }
+.legend i.c-hot { color:var(--hot) } .legend i.c-ok { color:var(--ok) } .legend i.c-warn { color:var(--warn) }
+.legend i.c-off { color:var(--nodeline); border-style:dashed }
 @media (max-width:640px) {
   main { padding:20px 12px 48px } h1 { font-size:26px }
   .review-section,.approval-bar,.decision-card { padding:16px }
@@ -166,6 +217,8 @@ button:disabled { opacity:.6; cursor:default }
     --node:#fff; --nodeline:#777; --off:#555; --offbg:#eee;
     --ok:#075b43; --okbg:#e8f5ef; --warn:#76370f; --warnbg:#fff3e8;
     --hot:#95203d; --hotbg:#fceef2; --hotline:#95203d;
+    --blue:#1d4fa8; --bluebg:#eef3fc; --purple:#5a2c99; --purplebg:#f4eefb;
+    --teal:#075b43; --tealbg:#e8f5ef; --amber:#76470a; --amberbg:#fbf3e6;
     color-scheme:light }
   body { background:#fff; color:#111; font-size:11pt }
   main { max-width:none; padding:0 }
@@ -184,7 +237,9 @@ button:disabled { opacity:.6; cursor:default }
 </style>
 <main>
 <header><p class="section-label">Planning package · review page kit</p>
-<h1>Review title</h1><p class="sub">Author · date · source revision. Replace this fixture with the artifact being judged.</p></header>
+<h1>Review title</h1><p class="sub">Author · date · source revision. Replace this fixture with the artifact being judged. <span class="pill p-warn">spec · review pending</span></p>
+<!-- Building block: section tabs. One link per section; add class "hot" to sections that need the reader's answer. -->
+<nav class="toc" aria-label="Sections"><a href="#why">Why this exists</a><a href="#findings">Findings</a><a href="#tickets">Ticket graph</a><a class="hot" href="#decisions">Decisions</a></nav></header>
 
 <!-- Building block: approval bar. Chat codes remain visible with a hosting handler. -->
 <aside class="approval-bar" aria-label="Approval instructions">
@@ -196,21 +251,33 @@ button:disabled { opacity:.6; cursor:default }
 <!-- Building block: section. The calling skill owns headings and order. -->
 <section class="review-section" aria-labelledby="why">
 <h2 id="why">Why this exists</h2>
-<div class="pair"><div class="pane"><h3>Before</h3><p>Review pages vary in appearance.</p></div>
-<div class="pane"><h3>After</h3><p>One review page kit supplies the look; each skill supplies the structure.</p></div></div>
+<div class="pair"><div class="pane before"><h3>Before</h3><p>Review pages vary in appearance.</p></div>
+<div class="pane after"><h3>After</h3><p>One review page kit supplies the look; each skill supplies the structure.</p></div></div>
 
-<!-- Building block: diagram frame. Replace the diagram with source-grounded content. -->
+<!-- Building block: diagram frame. Replace the diagram with source-grounded content.
+     Color each node by its kind (c-blue, c-purple, c-teal, c-amber) and keep the legend in step. -->
 <figure class="diagram-frame" aria-label="Page composition">
-<svg viewBox="0 0 760 130" role="img" aria-label="The skill supplies structure to the page; the kit supplies its appearance.">
+<svg viewBox="0 0 760 170" role="img" aria-label="The skill supplies structure to the page; the kit supplies its appearance; the host serves it.">
 <defs><marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--dim)"/></marker></defs>
-<rect class="node" x="10" y="25" width="190" height="70" rx="8"/><text class="node-label" x="105" y="65" text-anchor="middle">Skill structure</text>
-<rect class="node" x="285" y="25" width="190" height="70" rx="8"/><text class="node-label" x="380" y="65" text-anchor="middle">Review page</text>
-<rect class="node" x="560" y="25" width="190" height="70" rx="8"/><text class="node-label" x="655" y="65" text-anchor="middle">Kit appearance</text>
-<path class="edge" d="M198 60 H287" marker-end="url(#flow-arrow)"/>
-<path class="edge" d="M562 60 H473" marker-end="url(#flow-arrow)"/>
+<rect class="group c-blue" x="4" y="8" width="480" height="150" rx="10"/><text class="group-label" x="18" y="28">planning package</text>
+<rect class="node c-purple" x="20" y="50" width="190" height="80" rx="8"/><text class="node-label" x="115" y="84" text-anchor="middle">Skill structure</text><text class="node-sub" x="115" y="106" text-anchor="middle">headings and order</text>
+<rect class="node c-teal tint" x="280" y="50" width="190" height="80" rx="8"/><text class="node-label" x="375" y="84" text-anchor="middle">Kit appearance</text><text class="node-sub" x="375" y="106" text-anchor="middle">one stylesheet</text>
+<rect class="node c-amber" x="556" y="50" width="190" height="80" rx="8"/><text class="node-label" x="651" y="84" text-anchor="middle">Review page</text><text class="node-sub" x="651" y="106" text-anchor="middle">one offline file</text>
+<path class="edge" d="M210 90 H280" marker-end="url(#flow-arrow)"/>
+<path class="edge" d="M470 90 H556" marker-end="url(#flow-arrow)"/>
 </svg></figure>
+<div class="legend"><span><i class="c-blue"></i>package boundary</span><span><i class="c-purple"></i>skill</span><span><i class="c-teal"></i>shared asset</span><span><i class="c-amber"></i>delivered page</span></div>
 <p class="caption">The same stylesheet is inlined into every page, including hosted pages.</p>
 </section>
+
+<!-- Building block: findings list. One row per finding or result; sev-hot Fatal, default (warn) Significant, sev-ok applied or passed, sev-info neutral note. -->
+<section class="review-section" aria-labelledby="findings"><h2 id="findings">Findings</h2>
+<ul class="find">
+<li class="sev-hot"><b>F1 Fatal</b> A rule contradicts the approval scope → decision Q1.</li>
+<li><b>F2 Significant</b> A story lacks a testable criterion → applied: criterion added.</li>
+<li class="sev-ok"><b>F3 Applied</b> The diagram now shows the delivery host.</li>
+<li class="sev-info"><b>Note</b> Fixture rows; replace them with the review's recorded findings.</li>
+</ul></section>
 
 <!-- Building block: ticket graph. Fixture edges are illustrative, not live dependencies. -->
 <section class="review-section" aria-labelledby="tickets"><h2 id="tickets">Ticket graph</h2>
@@ -218,19 +285,19 @@ button:disabled { opacity:.6; cursor:default }
 <figure class="diagram-frame ticket-graph">
 <svg viewBox="0 0 760 150" role="img" aria-label="Illustrative dependency: the kit ticket blocks the examples ticket. Build the kit first.">
 <defs><marker id="ticket-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--dim)"/></marker></defs>
-<rect class="node" x="20" y="30" width="270" height="80" rx="8"/><text class="node-label" x="155" y="63" text-anchor="middle">1 · Build kit</text><text class="edge-label" x="155" y="87" text-anchor="middle">Ready</text>
-<rect class="node blocked" x="470" y="30" width="270" height="80" rx="8"/><text class="node-label" x="605" y="63" text-anchor="middle">2 · Build examples</text><text class="edge-label" x="605" y="87" text-anchor="middle">Blocked by kit</text>
+<rect class="node c-ok" x="20" y="30" width="270" height="80" rx="8"/><text class="node-label" x="155" y="63" text-anchor="middle">1 · Build kit</text><text class="edge-label" x="155" y="87" text-anchor="middle">Ready</text>
+<rect class="node c-warn blocked" x="470" y="30" width="270" height="80" rx="8"/><text class="node-label" x="605" y="63" text-anchor="middle">2 · Build examples</text><text class="edge-label" x="605" y="87" text-anchor="middle">Blocked by kit</text>
 <path class="edge" d="M288 70 H472" marker-end="url(#ticket-arrow)"/><text class="edge-label" x="380" y="58" text-anchor="middle">blocks</text>
 </svg></figure></section>
 
 <section class="review-section" aria-labelledby="decisions"><h2 id="decisions">Decisions</h2>
 <!-- Building block: decision card. Repeat for each open question (at most five). -->
-<article class="decision-card" aria-labelledby="q1"><h3 id="q1">Q1 · One shared look?</h3>
+<article class="decision-card" aria-labelledby="q1"><h3 id="q1"><span class="qid">Q1</span>One shared look?</h3>
 <p class="fact"><strong>Deciding fact:</strong> a shared stylesheet makes pages consistent while preserving each skill's section order.</p>
 <p>Recommend A because it keeps maintenance in one place. Fixture question; this is not a recorded decision.</p>
 <div class="options" role="group" aria-labelledby="q1">
-<label class="option"><input type="radio" name="Q1" value="A"><span><span class="option-title">Q1A · Use the review page kit</span> <span class="recommended">Recommended</span><p>Gain: consistent appearance and one stylesheet to maintain.</p><p>Cost: custom page styling must fit the shared building blocks.</p></span></label>
-<label class="option"><input type="radio" name="Q1" value="B"><span><span class="option-title">Q1B · Keep page-specific styling</span><p>Gain: unrestricted appearance for each page.</p><p>Cost: each page must maintain its own themes and print states.</p></span></label>
+<label class="option"><input type="radio" name="Q1" value="A"><span><span class="option-title">Q1A · Use the review page kit</span> <span class="recommended">Recommended</span><p class="gain">Gain: consistent appearance and one stylesheet to maintain.</p><p class="cost">Cost: custom page styling must fit the shared building blocks.</p></span></label>
+<label class="option"><input type="radio" name="Q1" value="B"><span><span class="option-title">Q1B · Keep page-specific styling</span><p class="gain">Gain: unrestricted appearance for each page.</p><p class="cost">Cost: each page must maintain its own themes and print states.</p></span></label>
 <label class="option"><input type="radio" name="Q1" value="INFO"><span><span class="option-title">Q1INFO · Need more information</span><p>An information request is not approval.</p></span></label>
 </div>
 <button type="button" data-clear="Q1">Clear Q1 selection</button>
