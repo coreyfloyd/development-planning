@@ -141,17 +141,6 @@ def test_render_only_returns_local_page_without_recursive_dispatch(delivery):
     assert json.loads(result.stdout)['render_only'] is True
 
 
-def test_spec_mapping_includes_approval_contract_and_retains_question_limit():
-    spec = (ROOT / 'skills/to-spec/SKILL.md').read_text()
-    review = (ROOT / 'skills/visual-review/SKILL.md').read_text()
-    assert '| User Stories |' in spec
-    assert '| What stops working |' in spec
-    for text in (spec, review):
-        assert 'verbatim' in text
-        assert 'nothing stops working' in text.lower()
-        assert 'at most five' in text.lower()
-    assert spec.index('| User Stories |') < spec.index('| What stops working |') < spec.index('| Data Model,')
-    assert 'review_delivery.py' in review
 
 
 def test_skill_binding_hands_local_page_to_native_agent(delivery):

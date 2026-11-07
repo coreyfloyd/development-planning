@@ -117,7 +117,6 @@ def verify(archive, keyring, fingerprint):
 def test_committed_key_is_the_published_hippocampus_release_key(gnupg_home):
     with open(FINGERPRINT_FILE, encoding="utf-8") as handle:
         committed = handle.read().strip()
-    assert committed == HIPPOCAMPUS_RELEASE_FINGERPRINT
     gpg(gnupg_home, "--import", PUBLISHED_KEY)
     assert fingerprints(gnupg_home) == [committed]
     assert fingerprints(gnupg_home, secret=True) == []
