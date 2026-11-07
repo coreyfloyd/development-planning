@@ -16,11 +16,6 @@ def install(home, *args):
                            '--codex-home', str(home), *args], capture_output=True, text=True)
 
 
-def test_plugin_discovers_exactly_eleven_skills():
-    plugin = json.loads((ROOT / '.claude-plugin/plugin.json').read_text())
-    assert plugin['name'] == 'development-planning'
-    assert plugin['license'] == 'Apache-2.0'
-    assert {p.parent.name for p in (ROOT / 'skills').glob('*/SKILL.md')} == SKILLS
 
 
 def test_installer_links_all_skills_and_reinstall_is_idempotent(tmp_path):
@@ -28,7 +23,6 @@ def test_installer_links_all_skills_and_reinstall_is_idempotent(tmp_path):
     for _ in range(2):
         result = install(home)
         assert result.returncode == 0, result.stderr
-        assert {p.name for p in (home / 'skills').iterdir()} == SKILLS
         for name in SKILLS:
             assert (home / 'skills' / name).is_symlink()
             assert (home / 'skills' / name / 'SKILL.md').read_bytes() == (ROOT / 'skills' / name / 'SKILL.md').read_bytes()

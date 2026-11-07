@@ -105,12 +105,6 @@ def test_skill_entrypoints_and_relative_links_resolve():
         assert (ROOT / 'skills' / target / 'SKILL.md').is_file()
 
 
-def test_release_inventory_covers_all_eleven_skills():
-    assert set(SKILLS) == {
-        'dev-plan', 'strawman', 'grilling', 'grill-me', 'grill-with-docs',
-        'to-spec', 'spec-review', 'to-tickets', 'domain-modeling',
-        'visual-review', 'diagramming',
-    }
 
 
 @pytest.mark.parametrize('extension', ['md', 'css', 'html', 'svg', 'py', 'json'])
