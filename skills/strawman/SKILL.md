@@ -9,6 +9,13 @@ A strawman is the step before grilling that offers two or three rough design dir
 
 Use only the conversation, existing specs and docs, the repo's `CONTEXT.md`, existing codebase patterns, and any applicable repository guidance. No web research. Use at most one exploration subagent if needed; aim for about five minutes. Read local glossary terms before naming concepts.
 
+Before drafting directions that would add a module, service, controller, store, or
+process, ask: **Can an existing system do 90% of this?** Inspect the applicable
+repository context and record each existing system considered by name and file,
+whether the direction reuses it, and a specific observed reason for each system
+not reused. Do this before presenting directions. If the answer depends on a
+product choice, take that choice into `grilling`; `to-spec` must not reopen it.
+
 Present two or three directions, each in at most six lines:
 
 - One-line shape in user-visible terms.
