@@ -122,6 +122,8 @@ Do NOT close or modify any parent issue.
 
 **Ticket status:** use the mapped tracker's readiness policy
 
+## Acceptance criteria
+
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2
 
