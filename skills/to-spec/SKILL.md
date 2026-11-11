@@ -57,7 +57,7 @@ For a ticket-body spec, use a session scratch draft for publishing and optional 
 1. **Confirm the interview is finished.** Grilling ends when every branch of the design tree is visited. If a branch is unvisited, hand back to `grilling`. A decision grilling surfaced that the user has not yet made goes in the spec's `## Open questions`, one checkbox each. This skill asks nothing new: "no interview" means no second interview.
 2. **Read the repo for vocabulary.** Read the repo's `CONTEXT.md` when present; otherwise use the repository’s documented terms. Use those terms, never a word on an `_Avoid_` list, and raise a missing term with the user instead of inventing one — specs are where names enter tickets and code. Respect ADRs in the area (see `grill-with-docs` output if it ran). Do not explore for architecture; the decisions are already made.
 3. **Sketch the test architecture seams** (inherited from mattpocock's to-spec; see `codebase-design` for the definition of an architecture seam): prefer existing architecture seams, at the highest level that exercises the feature; propose new ones only where none exist. Confirm with the user in one message. These become Testing Decisions.
-4. **Write the spec** with the template below. Each user story carries its own acceptance-criteria checklist. Fill Architecture Decisions only if grilling settled architecture; otherwise omit the section entirely.
+4. **Write the spec** with the template below. Describe each user story under `## User Stories`, then put its supplied criteria under exactly one canonical `## Acceptance criteria` section. Give each story an ID anchor and make its canonical group heading link back to that story. Keep story groups in source order; preserve each story ID and description. Never duplicate, omit, or invent criteria or scope. If the supplied spec already has the canonical section, preserve it once rather than creating another. Fill Architecture Decisions only if grilling settled architecture; otherwise omit the section entirely.
 5. **Self-check** (from brainstorming): placeholders or TBDs; sections that contradict each other; scope fits one feature that `to-tickets` can slice; derive the ticket count from the completed acceptance criteria (§Ticket count); any requirement readable two ways. Fix inline, once.
 6. **Save.** Follow the resolved spec location: `issues` keeps the spec in the issue body for either ticket count; a directory receives a dated feature Markdown file. Keep a scratch draft for publication and optional review.
 7. **Publish to the tracker.** Follow the resolved tracker binding and label vocabulary in the shared contract. The generic default creates or updates the target repo's GitHub issue using a body file and explicit `--repo`, after satisfying the target repo’s required label/workflow policy. A default vocabulary adds no restrictions; it does not waive repository requirements. No private labels or board attachment are imposed on other repos. Follow the shared contract’s preflight before creating an issue, and stop on an incompatible explicit vocabulary. Several tickets use an epic body containing the full spec; one ticket uses its own body. Read the published body back. Link a repository spec file when the configured destination produces one.
@@ -96,10 +96,14 @@ approval labels follow the resolved tracker's protocol, never a built-in vocabul
 Record the settled direction in one line, naming the directions not taken.]
 
 ## User Stories
-### S1 — As a [user], I want to [action] so that [outcome]
+### <a id="s1"></a>S1 — As a [user], I want to [action] so that [outcome]
+### <a id="s2"></a>S2 — ...
+
+## Acceptance criteria
+### [S1 — As a [user], I want to [action] so that [outcome]](#s1)
 - [ ] [Concrete, testable criterion, verifiable from the user's perspective]
 - [ ] ...
-### S2 — ...
+### [S2 — ...](#s2)
 
 ## What stops working
 [Each existing case this feature refuses, removes, or restricts, in plain terms.
@@ -141,7 +145,7 @@ Omit the section when there are none.]
 The direct local renderer uses this same section mapping without invoking a hosted workflow.
 Read the table top to bottom: it owns the spec page's content headings and order;
 the review page kit supplies building blocks, never extra sections. Keep all
-stories and criteria as readable text, not just a diagram, count, recap or footer
+stories and canonical criteria as readable text, not just a diagram, count, recap or footer
 reminder. A diagram or caption limit must never truncate the criteria. Existing
 specs may put `### What stops working` inside User Stories; render it as the
 separate mapped section below, without treating it as another story. If the
@@ -151,7 +155,8 @@ source omits it, name any restrictions the approved spec states; only say
 | Spec section | Surface element |
 |---|---|
 | Problem Statement + Solution | "Why this exists" before/after strip |
-| User Stories | "User Stories": every story heading and its acceptance-criteria checklist verbatim, in source order |
+| User Stories | "User Stories": every story heading and description verbatim, in source order |
+| Acceptance criteria | "Acceptance criteria": every story-linked criteria group and criterion verbatim, in source order |
 | What stops working | "What stops working": every refused, removed, or restricted case verbatim; when there are none, state "Nothing stops working." |
 | Data Model, Architecture Decisions | "The shape" diagram |
 | Testing Decisions | "Testing Decisions" section |
