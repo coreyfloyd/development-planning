@@ -58,14 +58,18 @@ approval after a handler supplies another protocol. Do not submit for the user.
 3. **Diagram-first sections.** One diagram per concept, at most three caption
    sentences. Render the artifact one-to-one, without re-deriving its decisions.
    For specs, use `to-spec`'s section mapping in its defined order and headings:
-   **Why this exists → User Stories → What stops working → The shape →
+   **Why this exists → User Stories → Acceptance criteria → What stops working → The shape →
    Testing Decisions → Out of Scope → Evaluator Rubric**, then any ticket graph,
    open-question decision cards and footer. Omit optional source sections that
-   are absent. Show every user story heading and its acceptance criteria verbatim
-   as readable text in source order, without a bullet cap. Neither a diagram nor
-   the footer's acceptance reminder replaces them. Show every existing case that
-   stops working; when there are none, state "Nothing stops working." Render a
-   nested `What stops working` subsection separately, not as a user story.
+   are absent. Show every user story heading and description verbatim in source
+   order, then every canonical criteria group, including its story backlink, and
+   criterion verbatim in source order, without a bullet cap. When a legacy spec
+   has criteria under User Stories and no `## Acceptance criteria` section,
+   preserve those story checklists under User Stories instead; do not invent a
+   canonical section or duplicate criteria. Neither a diagram nor the footer's
+   acceptance reminder replaces stories or criteria. Show every existing case
+   that stops working; when there are none, state "Nothing stops working." Render
+   a nested `What stops working` subsection separately, not as a user story.
    The review page kit adds no content sections of its own.
 4. **Dependency graph for multi-ticket approval.** Show tickets with repo-qualified
    links and titles, native blocked-by edges, topological ordering, and visibly
