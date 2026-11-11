@@ -59,11 +59,13 @@ approval after a handler supplies another protocol. Do not submit for the user.
    sentences. Render the artifact one-to-one, without re-deriving its decisions.
    For specs, use `to-spec`'s section mapping in its defined order and headings:
    **Why this exists → User Stories → Acceptance criteria → What stops working → The shape →
-   Testing Decisions → Out of Scope → Evaluator Rubric**, then any ticket graph,
+   Existing systems (when present) → Testing Decisions → Out of Scope → Evaluator Rubric**, then any ticket graph,
    open-question decision cards and footer. Omit optional source sections that
    are absent. Show every user story heading and description verbatim in source
    order, then every canonical criteria group, including its story backlink, and
-   criterion verbatim in source order, without a bullet cap. When a legacy spec
+   criterion verbatim in source order, without a bullet cap. When present, render
+   the Existing systems section with its proposed addition, considered systems and
+   files, reuse decisions, and supported non-reuse reasons. When a legacy spec
    has criteria under User Stories and no `## Acceptance criteria` section,
    preserve those story checklists under User Stories instead; do not invent a
    canonical section or duplicate criteria. Neither a diagram nor the footer's
