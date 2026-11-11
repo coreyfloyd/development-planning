@@ -25,6 +25,22 @@ Each round the user answers reshapes the tree: settled decisions push the fronti
 
 Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, etc.), dispatch a sub-agent to find it; don't ask the user for anything you could look up yourself. Don't block on it: a running exploration is an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to report; ask the rest of the frontier now. The _decisions_ are the user's: put each to them and wait.
 
+## Existing-systems audit
+
+Before the first round for a direction that adds a module, service, controller,
+store, or process, produce an **Existing-systems audit**. When `dev-plan`
+supplies its strawman audit, verify it remains applicable; when grilling runs
+standalone or it is missing, inspect the repository context and produce it here.
+Ask whether an existing system can do 90% of the work, then record the proposed
+addition; every internal system considered by name and file; which ones the
+direction reuses; and a specific observed reason for each not reused. Resolve a
+product choice through the normal frontier before drafting; do not defer the
+audit to `to-spec`.
+
+Carry the completed audit unchanged in the final handoff with the settled
+direction, rejected directions, and resolved decisions. If the direction adds
+none of those things, record that no existing-systems audit is required.
+
 
 When called by `dev-plan`, build the first round on the settled direction from `strawman`. Standalone grilling does not invoke `strawman`.
 

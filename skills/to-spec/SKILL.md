@@ -25,7 +25,7 @@ subagent only on the user's yes. Configured handlers own their additional gates.
 grilling → to-spec → the user decides: spec-review or not → the user approves (resolved approval flow) → to-tickets → gen↔eval
 ```
 
-- **Input:** settled grilling decisions, the settled direction and directions not taken. If decisions are missing, return to `grilling`.
+- **Input:** settled grilling decisions, the settled direction and directions not taken. For a direction that adds a module, service, controller, store, or process, also receive the completed **Existing-systems audit** from `grilling`. If decisions or that required audit are missing, return to `grilling`.
 - **Output:** one ticket's body, or a repository spec file plus epic when configured, derived after drafting (§Ticket count).
 - **Review:** ask the user once whether to run a fresh `spec-review`; never launch by default.
 - **Consumer:** one ticket goes to execution after chat approval; several go through the resolved review delivery and ticket breakdown.
@@ -54,11 +54,11 @@ For a ticket-body spec, use a session scratch draft for publishing and optional 
 
 ## Process
 
-1. **Confirm the interview is finished.** Grilling ends when every branch of the design tree is visited. If a branch is unvisited, hand back to `grilling`. A decision grilling surfaced that the user has not yet made goes in the spec's `## Open questions`, one checkbox each. This skill asks nothing new: "no interview" means no second interview.
+1. **Confirm the interview is finished.** Grilling ends when every branch of the design tree is visited. If a branch is unvisited, hand back to `grilling`. For an infrastructure addition, require its completed Existing-systems audit; if it is absent, return to `grilling`, which performs that audit before drafting resumes. A decision grilling surfaced that the user has not yet made goes in the spec's `## Open questions`, one checkbox each. This skill asks nothing new: "no interview" means no second interview.
 2. **Read the repo for vocabulary.** Read the repo's `CONTEXT.md` when present; otherwise use the repository’s documented terms. Use those terms, never a word on an `_Avoid_` list, and raise a missing term with the user instead of inventing one — specs are where names enter tickets and code. Respect ADRs in the area (see `grill-with-docs` output if it ran). Do not explore for architecture; the decisions are already made.
 3. **Sketch the test architecture seams** (inherited from mattpocock's to-spec; see `codebase-design` for the definition of an architecture seam): prefer existing architecture seams, at the highest level that exercises the feature; propose new ones only where none exist. Confirm with the user in one message. These become Testing Decisions.
-4. **Write the spec** with the template below. Describe each user story under `## User Stories`, then put its supplied criteria under exactly one canonical `## Acceptance criteria` section. Give each story an ID anchor and make its canonical group heading link back to that story. Keep story groups in source order; preserve each story ID and description. Never duplicate, omit, or invent criteria or scope. If the supplied spec already has the canonical section, preserve it once rather than creating another. Fill Architecture Decisions only if grilling settled architecture; otherwise omit the section entirely.
-5. **Self-check** (from brainstorming): placeholders or TBDs; sections that contradict each other; scope fits one feature that `to-tickets` can slice; derive the ticket count from the completed acceptance criteria (§Ticket count); any requirement readable two ways. Fix inline, once.
+4. **Write the spec** with the template below. Describe each user story under `## User Stories`, then put its supplied criteria under exactly one canonical `## Acceptance criteria` section. Give each story an ID anchor and make its canonical group heading link back to that story. Keep story groups in source order; preserve each story ID and description. Never duplicate, omit, or invent criteria or scope. If the supplied spec already has the canonical section, preserve it once rather than creating another. When the spec adds a module, service, controller, store, or process, include `## Existing systems` using the settled planning audit; its names, file evidence, reuse choice, and non-reuse reasons belong only there. Fill Architecture Decisions only if grilling settled architecture; otherwise omit the section entirely.
+5. **Self-check** (from brainstorming): placeholders or TBDs; sections that contradict each other; scope fits one feature that `to-tickets` can slice; derive the ticket count from the completed acceptance criteria (§Ticket count); any requirement readable two ways. For an infrastructure addition, confirm the conditional `## Existing systems` section names every system considered and its file, records reuse, and gives a specific supported reason for every non-reuse. A missing planning decision returns to `grilling`, not a new drafting interview. Fix inline, once.
 6. **Save.** Follow the resolved spec location: `issues` keeps the spec in the issue body for either ticket count; a directory receives a dated feature Markdown file. Keep a scratch draft for publication and optional review.
 7. **Publish to the tracker.** Follow the resolved tracker binding and label vocabulary in the shared contract. The generic default creates or updates the target repo's GitHub issue using a body file and explicit `--repo`, after satisfying the target repo’s required label/workflow policy. A default vocabulary adds no restrictions; it does not waive repository requirements. No private labels or board attachment are imposed on other repos. Follow the shared contract’s preflight before creating an issue, and stop on an incompatible explicit vocabulary. Several tickets use an epic body containing the full spec; one ticket uses its own body. Read the published body back. Link a repository spec file when the configured destination produces one.
 8. **Ask the user whether to run `spec-review`.** Ask once with recommendation and cost: "Run one independent spec review on this spec (~N minutes), or go straight to approval?" Never dispatch by default or on a revision without asking again. On yes, use the resolved `spec_review_launch` binding, with `spec_path` and `grilling_decisions_summary`: settled direction and approved decisions, one line each. Read a mapped skill's instructions or invoke the command with that request as JSON on stdin. Follow `spec-review`'s launch/context separation: the default is a fresh subagent of the running tool with a clean brief and the spec-review checklist, never the author's context. The reviewer executes the checklist without resolving or dispatching again. If no fresh-context capability exists, report the blocker. Wait for its full verdict before changing the candidate. Apply Fatal and Significant findings, log Minor findings, re-save and update the issue. On no, record `spec review: not run (the user, YYYY-MM-DD)` and continue.
@@ -113,6 +113,13 @@ When no existing case is affected, state "Nothing stops working."]
 [What data the feature needs: entities, fields, relationships, the grain of each
 ("one row is one ___"). Shape, not schema. No SQL, no file paths.]
 
+## Existing systems (required only when this spec adds a module, service, controller, store, or process)
+[Omit this section when the feature adds none of those. State the new addition,
+then list every existing system considered by name and file. For each, say whether
+the feature reuses it. Each system not reused needs a specific, evidence-based
+reason grounded in the cited file's responsibility or capability; a generic claim
+that it does not fit is not enough. File evidence belongs only in this section.]
+
 ## Architecture Decisions (optional — omit the section when grilling settled none)
 [Decisions grilling made that constrain the how: modules touched, interfaces changed,
 schema changes, API contracts, integration points. Prose. No file paths, no code.
@@ -159,6 +166,7 @@ source omits it, name any restrictions the approved spec states; only say
 | Acceptance criteria | "Acceptance criteria": every story-linked criteria group and criterion verbatim, in source order |
 | What stops working | "What stops working": every refused, removed, or restricted case verbatim; when there are none, state "Nothing stops working." |
 | Data Model, Architecture Decisions | "The shape" diagram |
+| Existing systems (when present) | "Existing systems": the addition, considered systems and files, reuse decisions, and supported non-reuse reasons |
 | Testing Decisions | "Testing Decisions" section |
 | Out of Scope | "Out of Scope" section |
 | Evaluator Rubric | "Evaluator Rubric" section |
@@ -169,7 +177,7 @@ source omits it, name any restrictions the approved spec states; only say
 ## Rules
 
 - **No second interview.** Synthesize; do not ask. Missing decisions go back to `grilling`.
-- **NO file paths, NO code structure, NO implementation instructions.** The generator decides.
+- **NO file paths, NO code structure, NO implementation instructions.** The generator decides. The conditional `Existing systems` section is the sole exception for file evidence.
 - **Acceptance criteria are user-verifiable.** "User sees subscriptions sorted by recent activity", not "repository returns rows ordered by updated_at".
 - **A stated existing contract is traced, not skimmed.** Before the spec asserts what current code accepts or returns, follow every validator and helper the entry point calls; the lines around it are not the contract (2026-10-24, session ade7529e: a verdict format stated from the code beside `spec_report` missed `_validate_content`, which requires numeric scores; spec review flagged it Fatal). The same applies to an external tool's loading behavior: when a spec states which file a tool reads or where it stops reading, cite that tool's validated docs or source, never another tool's behavior (2026-10-25: a spec revision claimed Codex reads a directory-level instruction file above the repository by discovery; Codex stops at the repository root, and the independent review missed it).
 - **Data Model describes shape, not schema.** Every new entity answers "one row is one ___" in a sentence.

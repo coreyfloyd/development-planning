@@ -58,6 +58,7 @@ For each item, quote evidence from the spec and give either a finding or "clear,
 - **Internal consistency:** sections agree; the data model supports every story; out-of-scope does not exclude required behavior.
 - **Ambiguity:** project terms match the glossary; quantities, ordering and boundaries are explicit, with no requirement readable two ways.
 - **Completeness:** no placeholders or empty required sections; testing decisions identify real architecture seams and prior art; out-of-scope and a platform evaluator rubric are identified.
+- **Existing systems for infrastructure additions:** when the spec adds a module, service, controller, store, or process, `## Existing systems` exists and states the addition; names every system considered with its file; identifies reuse; and gives a specific, supported reason for every non-reuse. A generic assertion that a system does not fit is unsupported. When none of those additions occurs, confirm the section is absent.
 - **Scope:** one coherent feature with demoable vertical slices; unrelated outcomes and deferred phases stay outside it.
 - **Data-model grain:** every entity answers "one row is one ___"; relationships and cardinality are clear; algorithm inputs preserve user intent as first-class records.
 - **Robustness of the product decision:** examine fatal flaws, hidden risks, assumptions and fragility separately. Each dimension needs a finding or an explicit reason it is clear. Include existing flows affected and reachable states where stories meet.
@@ -68,6 +69,9 @@ Make a second pass and add at least one finding or newly confirmed clear with re
 ## Findings and disposition
 
 Rank defects **Fatal** (unimplementable or unverifiable requirement, contradiction, or unverified load-bearing assumption), **Significant** (material gap in behavior, coverage or precision), or **Minor** (nonblocking polish). Every finding cites evidence and proposes a fix in one sentence.
+
+A missing or incomplete required `## Existing systems` section, or an unsupported
+non-reuse reason, is a Significant finding and requires `ITERATE`.
 
 From Fatal and Significant findings, select at most five open items requiring the user: product choices, scope calls or contradictions only they can resolve. Each includes context, options with tradeoffs, and a recommendation. The author handles other findings. Separate disagreements with approved decisions from findings.
 
