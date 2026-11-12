@@ -52,14 +52,15 @@ Use qualitative checklist judgments only; do not assign numeric ratings.
 
 For each item, quote evidence from the spec and give either a finding or "clear, checked" with reasoning:
 
-- **Acceptance-criteria testability:** every criterion has an observable pass/fail from the user's perspective, including negative and empty cases.
+- **Acceptance-criteria testability:** every criterion has an observable pass/fail from the user's perspective, including negative and empty cases, with an attached concrete check method and expected evidence. Do not impose new costly verification requirements.
 - **Story coverage:** every story has criteria, every criterion belongs to a story, and all Solution outcomes and boundary behaviors are covered.
-- **No how-leakage:** product behavior belongs in stories and criteria; constraints on implementation belong only in recorded Architecture Decisions.
+- **No how-leakage:** product behavior belongs in stories and criteria; settled preservation constraints belong in Guardrails and architecture choices in recorded Architecture Decisions; neither section introduces unapproved scope.
 - **Internal consistency:** sections agree; the data model supports every story; out-of-scope does not exclude required behavior.
 - **Ambiguity:** project terms match the glossary; quantities, ordering and boundaries are explicit, with no requirement readable two ways.
 - **Completeness:** no placeholders or empty required sections; testing decisions identify real architecture seams and prior art; out-of-scope and a platform evaluator rubric are identified.
 - **Existing systems for infrastructure additions:** when the spec adds a module, service, controller, store, or process, `## Existing systems` exists and states the addition; names every system considered with its file; identifies reuse; and gives a specific, supported reason for every non-reuse. A generic assertion that a system does not fit is unsupported. When none of those additions occurs, confirm the section is absent.
 - **Migration/cutover fidelity:** the dedicated section preserves settled grilling choices, agreed costs/delays and explicit not-applicable decisions, distinguishing before-cutover blockers from after-deploy checks. Flag omissions or invented prerequisites; do not impose new rollout policy. Missing material choices return to `grilling`.
+- **Guardrails fidelity:** preservation constraints match the settled decisions, stay distinct from Out of Scope, and carry through the spec without invented restrictions; an explicit "None specified" is valid.
 - **Scope:** one coherent feature with demoable vertical slices; unrelated outcomes and deferred phases stay outside it.
 - **Data-model grain:** every entity answers "one row is one ___"; relationships and cardinality are clear; algorithm inputs preserve user intent as first-class records.
 - **Robustness of the product decision:** examine fatal flaws, hidden risks, assumptions and fragility separately. Each dimension needs a finding or an explicit reason it is clear. Include existing flows affected and reachable states where stories meet.

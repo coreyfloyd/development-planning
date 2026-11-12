@@ -69,6 +69,12 @@ Give each ticket its **blocking edges** — the other tickets that must complete
 
 **Group tickets into the fewest evaluation seams that are each one demoable boundary.** Every evaluation seam costs an evaluator launch, so `self` is for a ticket with no natural seam-mate, not the starting assumption: tickets that are only meaningful when evaluated together share one evaluation seam. Keep a ticket in another repository on an evaluation seam of its own, because each evaluation seam is evaluated on one integrated diff.
 
+Carry applicable approved Guardrails into each slice, separate from Out of Scope;
+state "None specified" when there are none. Preserve each criterion's text and
+attached check method from the spec; add no new constraints or mandatory costly
+checks. For conversation-only input, use `to-spec`'s Guardrails/check-method guidance
+and return missing material decisions to `grilling`.
+
 **Acceptance criteria describe the deliverable, never a review step.** Do not write "the user reviews X before merge" or any "operator approves the diff" line as a criterion: the evaluator validates the output against the criteria, and decisions the user made during the spec are already settled. If a slice needs a decision only the user can make (a design choice the spec left open), write it as an open question under the ticket's `## Open questions`, one checkbox each: `- [ ]` is open, and `- [x]` is answered, with the answer written on the same line. Follow the resolved tracker's readiness and approval policy; do not treat an unresolved design question as authorization to implement.
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change — rename a column, retype a shared symbol — whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket — green is promised only there.
@@ -129,10 +135,16 @@ Do NOT close or modify any parent issue.
 
 **Ticket status:** use the mapped tracker's readiness policy
 
+## Guardrails
+
+[Applicable settled preservation constraints, or "None specified".]
+
 ## Acceptance criteria
 
 - [ ] Acceptance criterion 1
+  - Check: [Concrete method and expected pass/fail evidence]
 - [ ] Acceptance criterion 2
+  - Check: [Concrete method and expected pass/fail evidence]
 
 ## Migration strategy and cutover criteria
 
@@ -156,10 +168,16 @@ A reference to the parent issue on the tracker (if the source was an existing is
 
 The end-to-end behaviour this ticket makes work, from the user's perspective — not layer-by-layer implementation.
 
+## Guardrails
+
+[Applicable settled preservation constraints, or "None specified".]
+
 ## Acceptance criteria
 
 - [ ] Criterion 1
+  - Check: [Concrete method and expected pass/fail evidence]
 - [ ] Criterion 2
+  - Check: [Concrete method and expected pass/fail evidence]
 
 ## Migration strategy and cutover criteria
 

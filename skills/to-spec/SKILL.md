@@ -57,7 +57,7 @@ For a ticket-body spec, use a session scratch draft for publishing and optional 
 1. **Confirm the interview is finished.** Grilling ends when every branch of the design tree is visited. If a branch is unvisited, hand back to `grilling`. For an infrastructure addition, require its completed Existing-systems audit; if it is absent, return to `grilling`, which performs that audit before drafting resumes. A decision grilling surfaced that the user has not yet made goes in the spec's `## Open questions`, one checkbox each. This skill asks nothing new: "no interview" means no second interview.
 2. **Read the repo for vocabulary.** Read the repo's `CONTEXT.md` when present; otherwise use the repository’s documented terms. Use those terms, never a word on an `_Avoid_` list, and raise a missing term with the user instead of inventing one — specs are where names enter tickets and code. Respect ADRs in the area (see `grill-with-docs` output if it ran). Do not explore for architecture; the decisions are already made.
 3. **Sketch the test architecture seams** (inherited from mattpocock's to-spec; see `codebase-design` for the definition of an architecture seam): prefer existing architecture seams, at the highest level that exercises the feature; propose new ones only where none exist. Confirm with the user in one message. These become Testing Decisions.
-4. **Write the spec** with the template below. Describe each user story under `## User Stories`, then put its supplied criteria under exactly one canonical `## Acceptance criteria` section. Give each story an ID anchor and make its canonical group heading link back to that story. Keep story groups in source order; preserve each story ID and description. Never duplicate, omit, or invent criteria or scope. If the supplied spec already has the canonical section, preserve it once rather than creating another. When the spec adds a module, service, controller, store, or process, include `## Existing systems` using the settled planning audit; its names, file evidence, reuse choice, and non-reuse reasons belong only there. Carry the settled migration/cutover decisions from `grilling` into the dedicated template section, including explicit not-applicable decisions and the distinction between before-cutover conditions and after-deploy checks. Do not invent thresholds, observation windows, infrastructure or rollout prerequisites; missing material choices return to `grilling`. Fill Architecture Decisions only if grilling settled architecture; otherwise omit the section entirely.
+4. **Write the spec** with the template below. Describe each user story under `## User Stories`, then put its supplied criteria under exactly one canonical `## Acceptance criteria` section. Give each story an ID anchor and make its canonical group heading link back to that story. Keep story groups in source order; preserve each story ID and description. Never duplicate, omit, or invent criteria or scope. Keep criterion text unchanged and attach its check method as subordinate `Check:` text (§Guardrails and check methods). If the supplied spec already has the canonical section, preserve it once rather than creating another. When the spec adds a module, service, controller, store, or process, include `## Existing systems` using the settled planning audit; its names, file evidence, reuse choice, and non-reuse reasons belong only there. Carry the settled migration/cutover decisions from `grilling` into the dedicated template section, including explicit not-applicable decisions and the distinction between before-cutover conditions and after-deploy checks. Do not invent thresholds, observation windows, infrastructure or rollout prerequisites; missing material choices return to `grilling`. Fill Architecture Decisions only if grilling settled architecture; otherwise omit the section entirely.
 5. **Self-check** (from brainstorming): placeholders or TBDs; sections that contradict each other; scope fits one feature that `to-tickets` can slice; derive the ticket count from the completed acceptance criteria (§Ticket count); any requirement readable two ways. For an infrastructure addition, confirm the conditional `## Existing systems` section names every system considered and its file, records reuse, and gives a specific supported reason for every non-reuse. A missing planning decision returns to `grilling`, not a new drafting interview. Fix inline, once.
 6. **Save.** Follow the resolved spec location: `issues` keeps the spec in the issue body for either ticket count; a directory receives a dated feature Markdown file. Keep a scratch draft for publication and optional review.
 7. **Publish to the tracker.** Follow the resolved tracker binding and label vocabulary in the shared contract. The generic default creates or updates the target repo's GitHub issue using a body file and explicit `--repo`, after satisfying the target repo’s required label/workflow policy. A default vocabulary adds no restrictions; it does not waive repository requirements. No private labels or board attachment are imposed on other repos. Follow the shared contract’s preflight before creating an issue, and stop on an incompatible explicit vocabulary. Several tickets use an epic body containing the full spec; one ticket uses its own body. Read the published body back. Link a repository spec file when the configured destination produces one.
@@ -83,6 +83,19 @@ approval labels follow the resolved tracker's protocol, never a built-in vocabul
 6. Each open question as a self-contained decision ask: context, options with tradeoffs, recommendation.
 7. Your recommendation, and what "approve" does: their answers and approval are recorded through the resolved tracker (step 10).
 
+## Guardrails and check methods
+
+Record the user's settled preservation constraints in `## Guardrails`: what must
+remain unchanged or must never happen, distinct from features excluded by Out of
+Scope. State "None specified" when there are none; invent no constraints.
+
+Every criterion names a concrete check method: a test, script, screenshot, or
+source-document comparison, with the evidence that determines pass/fail. Keep it
+attached to that criterion without changing its approved text, story association,
+or canonical location. Reuse existing checks when suitable. Do not introduce
+mandatory costly checks or infrastructure; missing material verification choices
+return to `grilling`. Check methods describe verification, not a new approval gate.
+
 ## Spec Template
 
 ```markdown
@@ -102,12 +115,18 @@ Record the settled direction in one line, naming the directions not taken.]
 ## Acceptance criteria
 ### [S1 — As a [user], I want to [action] so that [outcome]](#s1)
 - [ ] [Concrete, testable criterion, verifiable from the user's perspective]
+  - Check: [Concrete method and expected pass/fail evidence]
 - [ ] ...
+  - Check: [Method and evidence for this criterion]
 ### [S2 — ...](#s2)
 
 ## What stops working
 [Each existing case this feature refuses, removes, or restricts, in plain terms.
 When no existing case is affected, state "Nothing stops working."]
+
+## Guardrails
+[Settled constraints: what must remain unchanged or must never happen.
+State "None specified" when there are none. Do not add new restrictions.]
 
 ## Data Model
 [What data the feature needs: entities, fields, relationships, the grain of each
@@ -169,8 +188,9 @@ source omits it, name any restrictions the approved spec states; only say
 |---|---|
 | Problem Statement + Solution | "Why this exists" before/after strip |
 | User Stories | "User Stories": every story heading and description verbatim, in source order |
-| Acceptance criteria | "Acceptance criteria": every story-linked criteria group and criterion verbatim, in source order |
+| Acceptance criteria | "Acceptance criteria": every story-linked criteria group, criterion and attached check method verbatim, in source order |
 | What stops working | "What stops working": every refused, removed, or restricted case verbatim; when there are none, state "Nothing stops working." |
+| Guardrails | "Guardrails": settled preservation constraints verbatim, or the stated absence of constraints |
 | Data Model, Architecture Decisions | "The shape" diagram |
 | Existing systems (when present) | "Existing systems": the addition, considered systems and files, reuse decisions, and supported non-reuse reasons |
 | Testing Decisions | "Testing Decisions" section |
