@@ -58,12 +58,14 @@ approval after a handler supplies another protocol. Do not submit for the user.
 3. **Diagram-first sections.** One diagram per concept, at most three caption
    sentences. Render the artifact one-to-one, without re-deriving its decisions.
    For specs, use `to-spec`'s section mapping in its defined order and headings:
-   **Why this exists → User Stories → Acceptance criteria → What stops working → The shape →
+   **Why this exists → User Stories → Acceptance criteria → What stops working → Guardrails → The shape →
    Existing systems (when present) → Testing Decisions → Migration strategy and cutover criteria → Out of Scope → Evaluator Rubric**, then any ticket graph,
    open-question decision cards and footer. Omit optional source sections that
    are absent. Show every user story heading and description verbatim in source
    order, then every canonical criteria group, including its story backlink, and
-   criterion verbatim in source order, without a bullet cap. When present, render
+   criterion and attached check method verbatim in source order, without a bullet cap.
+   Preserve the source Guardrails verbatim; do not invent constraints or backfill
+   missing methods in an already-approved source. When present, render
    the Existing systems section with its proposed addition, considered systems and
    files, reuse decisions, and supported non-reuse reasons. When a legacy spec
    has criteria under User Stories and no `## Acceptance criteria` section,
