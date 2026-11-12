@@ -51,6 +51,13 @@ Break the work into **tracer bullet** tickets.
 
 </vertical-slice-rules>
 
+Carry the approved spec's migration/cutover decisions into each affected slice
+under `## Migration strategy and cutover criteria`: preserve relevant choices,
+explicit not-applicable decisions, agreed costs/delays, before-cutover blockers and
+after-deploy checks. Link shared conditions to the owning slice; do not invent
+thresholds, waiting periods or parallel systems. Missing material choices return
+to `grilling` before publication.
+
 Give each ticket its **blocking edges** — the other tickets that must complete before it can start. A ticket with no blockers can start immediately. Distinguish implementation order from closure dependencies. If shared evaluation or epic closure keeps an earlier slice open, record integrate-and-verify ordering in the ticket body; use native blockers only when closure can precede dependent work.
 
 **Place every ticket under the resolved tracker's policy.** Before drafting, read the target repo's applicable agent/contribution instructions and issue policy, and inspect existing issues, labels, milestones, and epics. Respect required labels and approval transitions. Use the resolved `label_vocabulary` under the contract's validation rules; an explicit vocabulary that cannot satisfy repo policy blocks publication, naming its source file and entry. With the default empty vocabulary and no repo label requirements, publish without labels.
@@ -127,6 +134,11 @@ Do NOT close or modify any parent issue.
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2
 
+## Migration strategy and cutover criteria
+
+[Relevant settled decisions from the approved spec, or explicit not applicable;
+identify shared conditions owned by another slice.]
+
 **Open questions:** (omit when there are none)
 
 - [ ] A decision only the user can make, still open
@@ -148,6 +160,11 @@ The end-to-end behaviour this ticket makes work, from the user's perspective —
 
 - [ ] Criterion 1
 - [ ] Criterion 2
+
+## Migration strategy and cutover criteria
+
+[Relevant settled decisions from the approved spec, or explicit not applicable;
+identify shared conditions owned by another slice.]
 
 ## Open questions
 

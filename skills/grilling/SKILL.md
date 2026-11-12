@@ -25,6 +25,23 @@ Each round the user answers reshapes the tree: settled decisions push the fronti
 
 Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, etc.), dispatch a sub-agent to find it; don't ask the user for anything you could look up yourself. Don't block on it: a running exploration is an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to report; ask the rest of the frontier now. The _decisions_ are the user's: put each to them and wait.
 
+## Migration and cutover decisions
+
+Before handing off to `to-spec`, settle the migration strategy and cutover criteria
+through the normal decision frontier. Establish which backups/recovery provisions,
+measurements/baselines, verification, parallel or shadow testing, rollout sequence,
+and cutover/rollback conditions apply. Record explicit **not applicable** decisions
+where appropriate; these are choices, not a required set of mechanisms. Explain
+material costs and delays before the user chooses.
+
+Separate conditions that must pass **before cutover** from checks performed **after
+deployment**. Missing historical measurements do not authorize a new baseline
+collection stage, staging project, waiting period, or parallel system. Resolve any
+material choice here; carry the settled decisions into the dedicated spec section.
+
+Reason: an unrequested baseline-collection stage delayed implementation
+(2026-11-12, development-planning#5).
+
 ## Existing-systems audit
 
 Before the first round for a direction that adds a module, service, controller,

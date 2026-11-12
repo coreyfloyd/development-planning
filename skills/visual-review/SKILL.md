@@ -59,7 +59,7 @@ approval after a handler supplies another protocol. Do not submit for the user.
    sentences. Render the artifact one-to-one, without re-deriving its decisions.
    For specs, use `to-spec`'s section mapping in its defined order and headings:
    **Why this exists → User Stories → Acceptance criteria → What stops working → The shape →
-   Existing systems (when present) → Testing Decisions → Out of Scope → Evaluator Rubric**, then any ticket graph,
+   Existing systems (when present) → Testing Decisions → Migration strategy and cutover criteria → Out of Scope → Evaluator Rubric**, then any ticket graph,
    open-question decision cards and footer. Omit optional source sections that
    are absent. Show every user story heading and description verbatim in source
    order, then every canonical criteria group, including its story backlink, and
@@ -72,7 +72,9 @@ approval after a handler supplies another protocol. Do not submit for the user.
    acceptance reminder replaces stories or criteria. Show every existing case
    that stops working; when there are none, state "Nothing stops working." Render
    a nested `What stops working` subsection separately, not as a user story.
-   The review page kit adds no content sections of its own.
+   Render migration/cutover choices as recorded, including explicit not-applicable
+   decisions and separate before-cutover blockers and after-deploy checks; do not
+   add rollout policy. The review page kit adds no content sections of its own.
 4. **Dependency graph for multi-ticket approval.** Show tickets with repo-qualified
    links and titles, native blocked-by edges, topological ordering, and visibly
    blocked nodes. Query the tracker's actual dependencies before drawing; do not
