@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.6 — 2026-11-13
+
+- Carry Guardrails and per-criterion check methods through grilling, specs,
+  review pages and ticket breakdown.
+- Require a Documentation consulted spec section with sources, decisions and
+  documentation gaps, shared by Claude Code and Codex.
+
 ## 0.1.5 — 2026-11-12
 
 - Settle migration and cutover choices during grilling, including applicable
