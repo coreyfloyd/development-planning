@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.7 — 2026-11-15
+
+- Allow agents to invoke `to-tickets` in Claude Code and Codex, retaining
+  approval of the ticket breakdown before publication.
+
 ## 0.1.6 — 2026-11-13
 
 - Carry Guardrails and per-criterion check methods through grilling, specs,
