@@ -82,12 +82,24 @@ version tag, excludes untracked files, writes the archive and checksum, and
 copies the public key and verifier. Rebuilding discards any old candidate
 signature, which cannot be assumed valid for rebuilt bytes.
 
-An agent stops after this unsigned build and hands the human the exact signing
-command. Agents must never sign with the release key, handle its passphrase,
-use loopback pinentry, read passphrase files/environment variables, or configure
-a pinentry to bypass the human decision.
+After this unsigned build, the maintainer either signs interactively with the
+manual command below, or replies exactly **SIGN** in the immutable candidate's
+approval thread. The maintainer's signing operation then signs the approved
+checksum with the dedicated expiring subkey and publishes exactly the approved
+files plus the signature. Any candidate change needs a new summary and SIGN.
 
-## Human signing only
+Operators invoke the signing operation without reading or relaying private-key
+bytes or the passphrase. No standing permission, ticket state, agent interpretation
+or unrelated reply substitutes for exact-release approval. If the operation is
+unavailable, hand the maintainer the manual command; never bypass its interactive
+pinentry gate.
+
+The published public key includes the dedicated signing subkey. The pinned primary
+fingerprint and verifier remain unchanged. Consumers with an older public-key copy
+must update it to verify new subkey-signed releases. Existing published releases,
+tags and assets remain untouched.
+
+## Manual maintainer signing
 
 From an interactive terminal, set `GPG_TTY` and sign the built checksum:
 
