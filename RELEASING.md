@@ -110,9 +110,10 @@ completed; this runbook does not imply it is already installed.
 
 When that operation is unavailable, the fallback is the already approved
 agent-operated managed-subkey method used for the companion package's 0.15.5
-release. Recover the retained deterministic helper and safe signing receipt from
-the deployment's private release operations record; confirm its inputs and exact
-release approval before use. Do not recreate credential handling in an ad-hoc
+release. No retained reusable helper has been identified for that earlier inline
+process. Obtain its recorded deterministic procedure and safe signing receipt
+from the operation owner; confirm its inputs and exact release approval before
+use. Delivery of the reusable signing command remains the operation owner's work. Do not recreate credential handling in an ad-hoc
 shell command or hand the maintainer a manual signing command.
 
 That process reads the provisioned signing subkey and passphrase inside the
@@ -124,7 +125,7 @@ signing subkey, and remove the temporary keyring. No primary private key belongs
 on the signing node. An empty default GnuPG keyring does not establish missing
 managed credentials.
 
-A missing helper, expired secret or signing failure is the operator's repair to
+A missing approved procedure, expired secret or signing failure is the operator's repair to
 coordinate. Preserve the candidate and report the concrete failure; never ask
 the maintainer to execute a recovery command, bypass SIGN, export a primary key,
 provision new credentials, or weaken verification. A missing signature blocks
