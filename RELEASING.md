@@ -1,10 +1,10 @@
 # Releasing the planning package
 
-This follows [continuity's release contract](https://github.com/coreyfloyd/continuity/blob/main/RELEASING.md).
+The package uses the same signed-checksum contract as [Hippocampus](https://github.com/coreyfloyd/hippocampus/blob/main/RELEASING.md).
 The verification script is adapted from continuity's `scripts/verify-release.sh`;
 it retains its isolated keyring, signer fingerprint and signed checksum checks,
 and adds explicit NOT VERIFIED failure diagnostics. The builder deliberately
-separates archive creation from manual signing.
+separates archive creation from approved checksum signing.
 
 ## Contract
 
@@ -30,8 +30,8 @@ Tests pin the public key to that fingerprint. Key rotation is a separate change.
 
 Wait until the other intended release work is complete and integrated. Requires
 Git, Python 3, Bash, GnuPG, `shasum`, uv, and authenticated GitHub CLI. The release
-secret key and an interactive pinentry are required only for the human signing
-step. From a clean, reviewed commit on main:
+signing subkey is held by the configured managed-secret signing node; the
+maintainer approves the exact candidate with **SIGN** and runs no signing command. From a clean, reviewed commit on main:
 
 ```sh
 test "$(git branch --show-current)" = main
@@ -68,7 +68,7 @@ For a release tag whose commit is already on remote main, still scan from the
 previous published tag, or omit the base for the first release, to cover all
 newly released history. Never move or force-push a published tag.
 
-## Build: agent stops here
+## Build the unsigned candidate
 
 A feature branch may build an unsigned candidate for handoff. Publication must
 use the final reviewed commit. Rebuild and re-sign if the commit changes.
@@ -82,41 +82,57 @@ version tag, excludes untracked files, writes the archive and checksum, and
 copies the public key and verifier. Rebuilding discards any old candidate
 signature, which cannot be assumed valid for rebuilt bytes.
 
-After this unsigned build, the maintainer either signs interactively with the
-manual command below, or replies exactly **SIGN** in the immutable candidate's
-approval thread. The maintainer's signing operation then signs the approved
-checksum with the dedicated expiring subkey and publishes exactly the approved
-files plus the signature. Any candidate change needs a new summary and SIGN.
+After this unsigned build, post the immutable candidate's repository, version,
+commit, archive and checksum digests, checksum selection, and exact upload list
+including the detached signature. Say **SIGN signs and publishes exactly this
+release.** The maintainer replies exactly **SIGN** in that request's approval
+thread; the signing operation reads that human reply within its deadline. An
+agent then signs the approved checksum with the dedicated expiring signing-only
+subkey and publishes exactly the approved files plus signature. Any change to
+bytes, checksum selection or upload names needs a new summary and SIGN.
 
 Operators invoke the signing operation without reading or relaying private-key
 bytes or the passphrase. No standing permission, ticket state, agent interpretation
-or unrelated reply substitutes for exact-release approval. If the operation is
-unavailable, hand the maintainer the manual command; never bypass its interactive
-pinentry gate.
+or unrelated reply substitutes for exact-release approval. The maintainer is
+never asked to run signing commands, answer pinentry or provide a passphrase.
 
 The published public key includes the dedicated signing subkey. The pinned primary
 fingerprint and verifier remain unchanged. Consumers with an older public-key copy
 must update it to verify new subkey-signed releases. Existing published releases,
 tags and assets remain untouched.
 
-## Manual maintainer signing
+## Agent signing and recovery
 
-From an interactive terminal, set `GPG_TTY` and sign the built checksum:
+Use the delivered deterministic signing operation on the configured signing node.
+Confirm its installed help and delivery receipt before invoking it; an unmerged
+candidate is not an installed command. The normal signing operation is being
+completed; this runbook does not imply it is already installed.
 
-```sh
-export GPG_TTY="$(tty)"
-gpg --local-user 09674AFF392661238F4ACBD9F32B3A412CD5EFC5 \
-  --armor --detach-sign \
-  --output dist/development-planning-0.1.0.tar.gz.asc \
-  dist/development-planning-0.1.0.tar.gz.sha256
-```
+When that operation is unavailable, the fallback is the already approved
+agent-operated managed-subkey method used for the companion package's 0.15.5
+release. Recover the retained deterministic helper and safe signing receipt from
+the deployment's private release operations record; confirm its inputs and exact
+release approval before use. Do not recreate credential handling in an ad-hoc
+shell command or hand the maintainer a manual signing command.
 
-Use the version being released if later than 0.1.0. Only the human answers
-pinentry. A missing signature blocks publication.
+That process reads the provisioned signing subkey and passphrase inside the
+process, imports only the dedicated subkey into a temporary mode-0700 GnuPG home,
+and passes the passphrase through a file descriptor. Credentials never enter
+model context, argv, output or logs. Sign only the approved checksum with the
+configured subkey, verify the unchanged pinned primary fingerprint and authorized
+signing subkey, and remove the temporary keyring. No primary private key belongs
+on the signing node. An empty default GnuPG keyring does not establish missing
+managed credentials.
+
+A missing helper, expired secret or signing failure is the operator's repair to
+coordinate. Preserve the candidate and report the concrete failure; never ask
+the maintainer to execute a recovery command, bypass SIGN, export a primary key,
+provision new credentials, or weaken verification. A missing signature blocks
+publication. Installation and restarts require their own authorization.
 
 ## Verify, tag and publish
 
-Safe for an authorized release operator after the signature exists. In the
+Continue as the authorized release operator after the approved signature exists. In the
 same shell as the preparation variables:
 
 ```sh
@@ -160,3 +176,8 @@ bash "$VERIFY_DIR/verify-release.sh" \
 Verification uses only those downloaded files and the independently trusted
 fingerprint. A missing or invalid signature, wrong signer, mismatched checksum,
 or altered archive must fail, name the failed check, and report NOT VERIFIED.
+
+If publication already exists but downloaded verification failed, the release is
+incomplete. Reconcile the existing approved assets and finish fresh-download
+verification without replacing a tag or asset; remote existence alone is not
+success.
