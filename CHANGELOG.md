@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.8 — 2026-11-19
+
+- Require a Simplest design spec section: the smallest design meeting the criteria,
+  requirement traces for every part, state, setting and option, and a simpler
+  alternative with why it falls short. Preserve the section on review pages.
+- Ask “what breaks if we drop this?” for each added part during grilling.
+- Check Simplicity in every requested spec review; missing justification or a
+  skipped or unjustifiably rejected simpler alternative is Significant (`ITERATE`).
+- Shared instructions for Claude Code and Codex.
+
 ## 0.1.7 — 2026-11-15
 
 - Allow agents to invoke `to-tickets` in Claude Code and Codex, retaining

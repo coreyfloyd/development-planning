@@ -54,11 +54,12 @@ For each item, quote evidence from the spec and give either a finding or "clear,
 
 - **Acceptance-criteria testability:** every criterion has an observable pass/fail from the user's perspective, including negative and empty cases, with an attached concrete check method and expected evidence. Do not impose new costly verification requirements.
 - **Story coverage:** every story has criteria, every criterion belongs to a story, and all Solution outcomes and boundary behaviors are covered.
-- **No how-leakage:** product behavior belongs in stories and criteria; settled preservation constraints belong in Guardrails and architecture choices in recorded Architecture Decisions; neither section introduces unapproved scope.
+- **No how-leakage:** product behavior belongs in stories and criteria; settled preservation constraints belong in Guardrails and architecture choices in recorded Architecture Decisions; Simplest design traces settled parts to requirements without introducing architecture choices; neither section introduces unapproved scope.
 - **Internal consistency:** sections agree; the data model supports every story; out-of-scope does not exclude required behavior.
 - **Ambiguity:** project terms match the glossary; quantities, ordering and boundaries are explicit, with no requirement readable two ways.
 - **Completeness:** no placeholders or empty required sections; testing decisions identify real architecture seams and prior art; out-of-scope and a platform evaluator rubric are identified.
 - **Documentation consulted:** every spec includes `## Documentation consulted`, listing each external or third-party API, library, platform or technique relied on, the documentation read (link and version or date matching the planned use), and what design decision it grounds; or explicitly "None". Check the cited docs against the planned use. Introducing or changing third-party API or technique use without this section or version-matched documentation is a Significant finding and requires `ITERATE`.
+- **Simplicity:** every spec reviewed includes `## Simplest design`, which names the smallest design that meets the acceptance criteria, traces every part, state, setting and option to a requirement, and considers at least one simpler alternative with the requirement it cannot meet. Check those reasons against the criteria; if a simpler alternative meets them all, the chosen design is unjustified.
 - **Existing systems for infrastructure additions:** when the spec adds a module, service, controller, store, or process, `## Existing systems` exists and states the addition; names every system considered with its file; identifies reuse; and gives a specific, supported reason for every non-reuse. A generic assertion that a system does not fit is unsupported. When none of those additions occurs, confirm the section is absent.
 - **Migration/cutover fidelity:** the dedicated section preserves settled grilling choices, agreed costs/delays and explicit not-applicable decisions, distinguishing before-cutover blockers from after-deploy checks. Flag omissions or invented prerequisites; do not impose new rollout policy. Missing material choices return to `grilling`.
 - **Guardrails fidelity:** preservation constraints match the settled decisions, stay distinct from Out of Scope, and carry through the spec without invented restrictions; an explicit "None specified" is valid.
@@ -72,6 +73,10 @@ Make a second pass and add at least one finding or newly confirmed clear with re
 ## Findings and disposition
 
 Rank defects **Fatal** (unimplementable or unverifiable requirement, contradiction, or unverified load-bearing assumption), **Significant** (material gap in behavior, coverage or precision), or **Minor** (nonblocking polish). Every finding cites evidence and proposes a fix in one sentence.
+
+A missing or incomplete `## Simplest design` section, a part, state, setting or
+option without a requirement behind it, or a skipped or unjustifiably rejected
+simpler alternative is a Significant finding and requires `ITERATE`.
 
 A missing or incomplete required `## Existing systems` section, or an unsupported
 non-reuse reason, is a Significant finding and requires `ITERATE`.
