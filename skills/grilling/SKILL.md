@@ -28,7 +28,8 @@ Finding _facts_ is your job, never the user's. When a frontier question needs a 
 ## Simplicity
 
 For each added part (including a state, setting or option), ask: "what breaks if we
-drop this?" Name the requirement that would fail; if none fails, drop the part.
+drop this?" Name the approved requirement that would fail; if none fails, propose dropping
+the part. Do not invent a requirement to keep it.
 Apply the normal frontier rules: resolve answers from approved criteria yourself
 and bring only unsettled product decisions to the user. Carry the requirement
 traces and at least one simpler alternative, with why it falls short, to `to-spec`.
