@@ -25,6 +25,14 @@ Each round the user answers reshapes the tree: settled decisions push the fronti
 
 Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, etc.), dispatch a sub-agent to find it; don't ask the user for anything you could look up yourself. Don't block on it: a running exploration is an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to report; ask the rest of the frontier now. The _decisions_ are the user's: put each to them and wait.
 
+## Simplicity
+
+For each added part (including a state, setting or option), ask: "what breaks if we
+drop this?" Name the requirement that would fail; if none fails, drop the part.
+Apply the normal frontier rules: resolve answers from approved criteria yourself
+and bring only unsettled product decisions to the user. Carry the requirement
+traces and at least one simpler alternative, with why it falls short, to `to-spec`.
+
 ## Migration and cutover decisions
 
 Before handing off to `to-spec`, settle the migration strategy and cutover criteria
