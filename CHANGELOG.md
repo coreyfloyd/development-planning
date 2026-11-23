@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+- Keep configuration as configuration in specs: `to-spec` writes behavior as
+  following the named setting, lists current values only in Further Notes, and
+  adds a criterion that code holds no such literal under non-default settings.
+- Settle configuration-valued decisions during grilling as "follows setting X",
+  with the current value as context only.
+- Add the "Configuration not encoded" spec-review check; a configuration value
+  written as fixed behavior is Significant (`ITERATE`).
+- Shared instructions for Claude Code and Codex.
+
 ## 0.1.8 — 2026-11-19
 
 - Require a Simplest design spec section: the smallest design meeting the criteria,
