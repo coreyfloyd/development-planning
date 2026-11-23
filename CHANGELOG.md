@@ -1,14 +1,15 @@
 # Changelog
 
-## Unreleased
+## 0.1.9 — Unreleased
 
-- Keep configuration as configuration in specs: `to-spec` writes behavior as
-  following the named setting, lists current values only in Further Notes, and
-  adds a criterion that code holds no such literal under non-default settings.
-- Settle configuration-valued decisions during grilling as "follows setting X",
-  with the current value as context only.
-- Add the "Configuration not encoded" spec-review check; a configuration value
-  written as fixed behavior is Significant (`ITERATE`).
+- Keep configuration as configuration in specs: when an existing setting owns a
+  value, or the user asked for it to be configurable, `to-spec` writes the behavior
+  as following that setting, lists current values and new defaults only in Further
+  Notes, and adds a criterion that the behavior follows a non-default value.
+- Grilling settles those decisions as "follows setting X" and adds a new setting
+  only when an approved requirement needs the value to vary.
+- Add the "Configuration not encoded" spec-review check; a configuration-owned
+  value written as fixed behavior is Significant (`ITERATE`).
 - Shared instructions for Claude Code and Codex.
 
 ## 0.1.8 — 2026-11-19

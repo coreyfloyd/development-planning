@@ -55,7 +55,7 @@ For each item, quote evidence from the spec and give either a finding or "clear,
 - **Acceptance-criteria testability:** every criterion has an observable pass/fail from the user's perspective, including negative and empty cases, with an attached concrete check method and expected evidence. Do not impose new costly verification requirements.
 - **Story coverage:** every story has criteria, every criterion belongs to a story, and all Solution outcomes and boundary behaviors are covered.
 - **No how-leakage:** product behavior belongs in stories and criteria; settled preservation constraints belong in Guardrails and architecture choices in recorded Architecture Decisions; Simplest design traces settled parts to requirements without introducing architecture choices; neither section introduces unapproved scope.
-- **Configuration not encoded:** behavior follows a named setting wherever configuration owns the value: which node runs a service, a node's working hours, counts and limits, schedules, destinations, hosts, provider or model. Current values appear only in Further Notes, and a criterion checks that code holds no such literal under non-default settings. Quote each value written as fixed behavior.
+- **Configuration not encoded:** where configuration owns a value (an existing setting, or one the user said should be configurable): which node runs a service, a node's working hours, counts and limits, schedules, destinations, hosts, provider or model, the behavior follows the named setting. Its current value, or a new setting's stated default, appears only in Further Notes, and a criterion shows the behavior following the setting at a non-default value. That check may reuse an existing test or fixture with the setting overridden; do not require a new test environment, and accept a stated reason when an override is not feasible. Ordinary product constants that no setting owns and the user did not ask to vary are not flagged. Quote each configuration-owned value written as fixed behavior.
 - **Internal consistency:** sections agree; the data model supports every story; out-of-scope does not exclude required behavior.
 - **Ambiguity:** project terms match the glossary; quantities, ordering and boundaries are explicit, with no requirement readable two ways.
 - **Completeness:** no placeholders or empty required sections; testing decisions identify real architecture seams and prior art; out-of-scope and a platform evaluator rubric are identified.
@@ -82,7 +82,7 @@ simpler alternative is a Significant finding and requires `ITERATE`.
 A missing or incomplete required `## Existing systems` section, or an unsupported
 non-reuse reason, is a Significant finding and requires `ITERATE`.
 
-A configuration value written as fixed behavior instead of the setting it follows
+A configuration-owned value written as fixed behavior instead of the setting it follows
 is a Significant finding and requires `ITERATE`; report each such value.
 
 From Fatal and Significant findings, select at most five open items requiring the user: product choices, scope calls or contradictions only they can resolve. Each includes context, options with tradeoffs, and a recommendation. The author handles other findings. Separate disagreements with approved decisions from findings.

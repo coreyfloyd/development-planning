@@ -30,10 +30,11 @@ Finding _facts_ is your job, never the user's. When a frontier question needs a 
 For each added part (including a state, setting or option), ask: "what breaks if we
 drop this?" Name the approved requirement that would fail; if none fails, propose dropping
 the part. Do not invent a requirement to keep it.
-Settle a decision whose answer is a configuration value (which node, hours, counts,
-limits, schedules, destinations, hosts, provider or model) as "follows setting X";
-record the current value as context only. A value with no setting today becomes a
-new setting.
+Settle a decision whose answer is a value configuration already owns, or one the user
+said should be configurable (which node, hours, counts, limits, schedules,
+destinations, hosts, provider or model), as "follows setting X"; record the current
+value as context only. A new setting is an added part: create it only when an approved
+requirement needs the value to vary; otherwise record the value as fixed behavior.
 Apply the normal frontier rules: resolve answers from approved criteria yourself
 and bring only unsettled product decisions to the user. Carry the requirement
 traces and at least one simpler alternative, with why it falls short, to `to-spec`.
