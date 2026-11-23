@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.9 — Unreleased
+## 0.1.9 — 2026-11-23
 
 - Keep configuration as configuration in specs: when an existing setting owns a
   value, or the user asked for it to be configurable, `to-spec` writes the behavior
