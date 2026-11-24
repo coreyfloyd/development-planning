@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- `to-tickets` checks the breakdown against the spec before showing it: every
+  ticket names an evaluation seam (a ticket without one is refused by name), the
+  spec's seams map to evaluation seams, every story and criterion is covered, and
+  blocking edges and shared contracts match the spec.
+- Every published ticket body carries an `Evaluation seam:` line; publication
+  refuses a ticket without one.
+- Shared instructions for Claude Code and Codex.
+
 ## 0.1.9 — 2026-11-23
 
 - Keep configuration as configuration in specs: when an existing setting owns a

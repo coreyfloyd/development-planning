@@ -78,6 +78,27 @@ and return missing material decisions to `grilling`.
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change — rename a column, retype a shared symbol — whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket — green is promised only there.
 
+### 3a. Check the breakdown against the spec
+
+Before showing the breakdown, compare it with the approved spec and report every gap.
+Fix each gap in the draft, or show it to the user as an open item:
+
+- **Every ticket names an evaluation seam.** A ticket with no `Evaluation seam:` line,
+  or with an empty one, is refused: name the ticket and draft its seam. `self` is a
+  seam value, not a missing one.
+- **Spec seams map to evaluation seams.** Each seam the spec names (its demoable
+  boundaries and test architecture seams) maps to one or more evaluation seams, and
+  each evaluation seam names its seam-mates. List any spec seam with no evaluation seam.
+- **Coverage.** Every user story and every acceptance criterion in the spec appears in
+  at least one ticket. List each one that is uncovered, word for word.
+- **Connections.** The blocking edges and the contracts tickets share (one ticket
+  produces an interface, setting, file or record that another consumes) match the
+  spec. List each connection the spec implies that has no edge or shared contract in
+  the breakdown, and each edge that the spec does not support.
+
+Show the check's result at the top of the breakdown: either "Breakdown check: no gaps"
+or the list of gaps, each naming its ticket, story, criterion or seam.
+
 ### 4. Quiz the user
 
 Present the proposed breakdown as a numbered list. For each ticket, show:
@@ -87,7 +108,7 @@ Present the proposed breakdown as a numbered list. For each ticket, show:
 - **What it delivers**: the end-to-end behaviour this ticket makes work
 - **Milestone and epic**: the milestone and the epic the ticket is required for, or "none" with the reason
 - **Labels**: the labels required by the resolved handler and target repo, including area when required
-- **Evaluation seam**: which evaluation seam the ticket belongs to (a demoable boundary evaluated as one unit: one admission path, one switch, one end-to-end story), naming its seam-mates; or `self` when the ticket is its own evaluation seam. Write the evaluation seam into the ticket body when the target workflow uses it so an executor can tell which tickets must be verified together.
+- **Evaluation seam**: which evaluation seam the ticket belongs to (a demoable boundary evaluated as one unit: one admission path, one switch, one end-to-end story), naming its seam-mates; or `self` when the ticket is its own evaluation seam. Write it into every ticket body as an `Evaluation seam:` line, so an executor can tell which tickets must be verified together.
 
 Ask the user:
 
@@ -101,7 +122,7 @@ Iterate until the user approves the ticket breakdown.
 
 ### 5. Publish the tickets to the configured tracker
 
-Publish only the approved breakdown through `values.tracker`:
+Publish only the approved breakdown through `values.tracker`. Refuse to publish any ticket whose body has no `Evaluation seam:` line, naming the ticket, and rerun the step 3a check after any change to the approved breakdown:
 
 - **`github-issues` builtin:** follow the generic tracker recipe in the shared contract. Check authentication and repository policy before any mutation. Use the resolved `repository` explicitly with every `gh issue` command. Create each slice with `gh issue create --repo <owner/repo> --title <title> --body-file <draft>` and policy-compliant label and milestone arguments, or edit a supplied existing issue after reading it. Read each issue back. No fixed board or label set is added by this skill.
 - **Skill binding:** use that handler's sanctioned publication commands, full required label set, milestone rules, native parent/dependency commands, and project board. Follow its additional policy and approval requirements in full; do not also run the builtin publication path.
@@ -133,6 +154,8 @@ Do NOT close or modify any parent issue.
 **Blocked by (local files):** the local filenames/numbers and titles of the tickets that block this one, or "None — can start immediately". These are local-file tracker references only.
 
 **Ticket status:** use the mapped tracker's readiness policy
+
+**Evaluation seam:** the seam name and its seam-mates, or `self`.
 
 ## Guardrails
 
@@ -166,6 +189,8 @@ A reference to the parent issue on the tracker (if the source was an existing is
 ## What to build
 
 The end-to-end behaviour this ticket makes work, from the user's perspective — not layer-by-layer implementation.
+
+Evaluation seam: the seam name and its seam-mates, or `self`.
 
 ## Guardrails
 
