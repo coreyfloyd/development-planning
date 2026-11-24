@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.10 — 2026-11-24
 
 - `to-tickets` checks the breakdown against the spec before showing it: every
   ticket names an evaluation seam (a ticket without one is refused by name), the
